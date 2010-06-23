@@ -2,6 +2,11 @@
                    Selenium Grid ChangeLog
                   =========================
 
+Summary of changes from 1.0.8 to 1.1.0
+======================================
+
+ * Allow startup of remote control with custom Selenium server JAR.
+   Example: `ant launch-remote-control -DcustomRemoteControl=/path/to/your/customer/selenium-server.jar`
 
 Summary of changes from 1.0.7 to 1.0.8 (June 9 2010)
 ====================================================

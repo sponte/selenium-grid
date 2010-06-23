@@ -13,6 +13,7 @@
   <taskdef resource="testngtasks" classpath="${basedir}/vendor/testng-5.7-jdk15.jar"/>
   
   <path id="remote-control.classpath">
+    <pathelement path="${customRemoteControl}" />
     <fileset dir="${basedir}/vendor">
       <include name="selenium-server-*.jar"/>
     </fileset>
