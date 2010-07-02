@@ -19,7 +19,7 @@
   <path id="demo.classpath">
     <pathelement location="${rootdir}/vendor/selenium-java-client-driver-${selenium.version}.jar"/>
     <pathelement location="${rootdir}/vendor/testng-5.7-jdk15.jar"/>
-    <pathelement location="${rootdir}/vendor/commons-logging-1.0.4.jar"/>
+    <pathelement location="${rootdir}/vendor/commons-logging-1.1.1.jar"/>
     <pathelement location="${basedir}/../tools/target/classes"/>
     <pathelement path="${java.class.path}/"/>
   </path>
@@ -28,7 +28,7 @@
     <fileset dir="${rootdir}/vendor">
       <include name="selenium-java-client-driver-${selenium.version}.jar"/>
       <include name="testng-5.7-jdk15.jar"/>
-      <include name="commons-logging-1.0.4.jar"/>
+      <include name="commons-logging-1.1.1.jar"/>
     </fileset>
     <pathelement location="${rootdir}/tools/target/classes"/>
     <pathelement path="${java.class.path}/"/>

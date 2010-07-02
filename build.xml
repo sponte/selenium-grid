@@ -59,7 +59,7 @@
       <fileset file="${basedir}/vendor/testng-5.7-jdk15.jar"/>
       <fileset file="${basedir}/vendor/selenium-java-client-driver-${selenium.version}.jar"/>
       <fileset file="${basedir}/vendor/selenium-server-${selenium.version}-standalone.jar"/>
-      <fileset file="${basedir}/vendor/commons-logging-1.0.4.jar"/>
+      <fileset file="${basedir}/vendor/commons-logging-1.1.1.jar"/>
     </copy>
     <copy todir="${dist}/${artifact}-${version}/lib" overwrite="true">
       <fileset dir="${basedir}/hub/target/dist/lib"/>

@@ -22,7 +22,7 @@
     <fileset dir="${rootdir}/vendor">
       <include name="selenium-java-client-driver-${selenium.version}.jar"/>
       <include name="testng-5.7-jdk15.jar"/>
-      <include name="commons-logging-1.0.4.jar"/>
+      <include name="commons-logging-1.1.1.jar"/>
     </fileset>
     <pathelement location="${rootdir}/tools/target/classes"/>
     <pathelement location="${rootdir}/tools/target/dist/lib/selenium-grid-tools-standalone-${version}.jar"/>
