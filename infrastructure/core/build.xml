@@ -16,7 +16,7 @@
     <fileset dir="${rootdir}/vendor">
       <include name="jyaml-1.3.jar"/>
       <include name="commons-httpclient-3.0.1.jar"/>
-      <include name="commons-codec-1.3.jar"/>
+      <include name="commons-codec-1.4.jar"/>
       <include name="commons-logging-1.1.1.jar"/>
     </fileset>
     <pathelement path="${java.class.path}/"/>
