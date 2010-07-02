@@ -14,7 +14,7 @@
 
   <path id="compile.classpath">
     <fileset dir="${rootdir}/vendor">
-      <include name="servlet-api-2.5-6.1.5.jar"/>
+      <include name="servlet-api-2.5-20081211.jar"/>
       <include name="commons-logging-1.1.1.jar"/>
 
         <include name="cobertura-1.9.jar"/>
@@ -31,9 +31,9 @@
 
   <path id="runtime.classpath">
       <fileset dir="${rootdir}/vendor">
-        <include name="jetty-6.0.2.jar"/>
-        <include name="jetty-util-6.0.2.jar"/>
-        <include name="servlet-api-2.5-6.1.5.jar"/>
+        <include name="jetty-6.1.24.jar"/>
+        <include name="jetty-util-6.1.24.jar"/>
+        <include name="servlet-api-2.5-20081211.jar"/>
         <include name="commons-httpclient-3.0.1.jar"/>
         <include name="commons-codec-1.4.jar"/>
         <include name="commons-logging-1.1.1.jar"/>
@@ -49,9 +49,9 @@
       <dependencies>
         <zipfileset src="${rootdir}/infrastructure/core/target/dist/lib/selenium-grid-core-${version}.jar"/>
         <zipfileset src="${rootdir}/infrastructure/webserver/target/dist/lib/selenium-grid-webserver-${version}.jar"/>
-        <zipfileset src="${rootdir}/vendor/jetty-6.0.2.jar"/>
-        <zipfileset src="${rootdir}/vendor/jetty-util-6.0.2.jar"/>
-        <zipfileset src="${rootdir}/vendor/servlet-api-2.5-6.1.5.jar"/>
+        <zipfileset src="${rootdir}/vendor/jetty-6.1.24.jar"/>
+        <zipfileset src="${rootdir}/vendor/jetty-util-6.1.24.jar"/>
+        <zipfileset src="${rootdir}/vendor/servlet-api-2.5-20081211.jar"/>
         <zipfileset src="${rootdir}/vendor/commons-httpclient-3.0.1.jar"/>
         <zipfileset src="${rootdir}/vendor/commons-codec-1.4.jar"/>
         <zipfileset src="${rootdir}/vendor/commons-logging-1.1.1.jar"/>
