@@ -736,7 +736,7 @@
     </library>
     <library name="Yaml">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/vendor/jyaml-1.3.jar!/" />
+        <root url="jar://$PROJECT_DIR$/vendor/snakeyaml-1.6.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

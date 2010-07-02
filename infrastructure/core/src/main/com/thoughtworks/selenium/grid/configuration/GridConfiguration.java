@@ -1,6 +1,9 @@
 package com.thoughtworks.selenium.grid.configuration;
 
-import org.ho.yaml.Yaml;
+import org.yaml.snakeyaml.*;
+import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -29,11 +32,23 @@ public class GridConfiguration {
     }
 
     public String toYAML() {
-        return Yaml.dump(this, true);
+        final Representer representer = new Representer();
+        representer.addClassTag(GridConfiguration.class, Tag.MAP);
+        representer.addClassTag(HubConfiguration.class, Tag.MAP);
+        representer.addClassTag(EnvironmentConfiguration.class, Tag.MAP);
+
+        final DumperOptions dumperOptions = new DumperOptions();
+        dumperOptions.setExplicitStart(true);
+        dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        dumperOptions.setDefaultScalarStyle(DumperOptions.ScalarStyle.PLAIN);
+
+        return new JavaBeanDumper(representer, dumperOptions).dump(this);
     }
 
     protected static GridConfiguration parse(Reader yamlDefinition) {
-        return Yaml.loadType(yamlDefinition, GridConfiguration.class);
+        final JavaBeanLoader loader = new JavaBeanLoader(GridConfiguration.class);
+
+        return (GridConfiguration) loader.load(yamlDefinition);
     }
 
 }

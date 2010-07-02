@@ -31,7 +31,7 @@ public class GridConfigurationTest {
 
         configuration = new GridConfiguration();
         configuration.getHub().setPort(3333);
-        environments = new EnvironmentConfiguration[]{new EnvironmentConfiguration("*firefox", "*firefox")};
+        environments = new EnvironmentConfiguration[]{new EnvironmentConfiguration("*firefox", "*firefox"), new EnvironmentConfiguration("*googlechrome", "*googlchrome")};
         configuration.getHub().setEnvironments(environments);
         expected = "--- \n"
                 + "hub: environments: \n"
@@ -39,6 +39,7 @@ public class GridConfigurationTest {
                 + "      browser: \"*firefox\"\n"
                 + "      name: \"*firefox\"\n"
                 + "  port: 3333\n";
+        System.out.print(configuration.toYAML());
         assertEquals(expected.replaceAll("\\s+", " "), configuration.toYAML().replaceAll("\\s+", " "));
     }
 
