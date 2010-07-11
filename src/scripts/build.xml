@@ -63,7 +63,7 @@
     <echo>********************************************************************</echo>
     <echo/>
     <echo>You can launch a hub by running 'ant launch-hub'</echo>
-    <echo>You can launch a a remote control with 'ant -Dport=4444 launch-remote-control'</echo>
+    <echo>You can launch a remote control with 'ant -Dport=4444 launch-remote-control'</echo>
   </target>
 
   <target name="launch-hub" description="Launch Selenium Hub">
