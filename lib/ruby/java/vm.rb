@@ -8,7 +8,7 @@ module Java
       command << classname
       command << jvm_properties(options[:properties])
       command << options[:args].join(' ') if options[:args]
-      command << ">\"#{options[:log_file]}\" 2>&1" if options[:log_file]
+      command << ">>\"#{options[:log_file]}\" 2>&1" if options[:log_file]
 
       if options[:background]
         if PLATFORM['win32']
