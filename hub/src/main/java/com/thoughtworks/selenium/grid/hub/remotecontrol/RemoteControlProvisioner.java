@@ -93,11 +93,17 @@ public class RemoteControlProvisioner {
         }
     }
 
-    /** Not Thread-safe */
     public boolean contains(RemoteControlProxy remoteControl) {
-        return remoteControls.contains(remoteControl);
+        remoteControlListLock.lock();
+
+        try {
+            return remoteControls.contains(remoteControl);
+        } finally {
+            remoteControlListLock.unlock();
+        }
     }
 
+    // Only called by methods with a lock on the RC list.
     public void tearDownExistingRemoteControl(RemoteControlProxy newRemoteControl) {
         final RemoteControlProxy oldRemoteControl;
 
