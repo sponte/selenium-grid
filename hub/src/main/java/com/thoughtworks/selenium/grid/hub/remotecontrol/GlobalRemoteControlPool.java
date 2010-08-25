@@ -180,10 +180,6 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         }
     }
 
-    protected void createNewProvisionerForEnvironment(String environment) {
-        provisionersByEnvironment.put(environment, new RemoteControlProvisioner());
-    }
-
     public void unregisterAllUnresponsiveRemoteControls() {
         for (RemoteControlProxy rc : allRegisteredRemoteControls()) {
             unregisterRemoteControlIfUnreliable(rc);
