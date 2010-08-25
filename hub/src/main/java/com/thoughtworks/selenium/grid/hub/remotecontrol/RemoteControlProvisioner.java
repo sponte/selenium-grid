@@ -122,8 +122,6 @@ public class RemoteControlProvisioner {
     }
 
     /**
-     * Not thread safe.
-     *
      * @return All available remote controls. Never null.
      */
     public List<RemoteControlProxy> availableRemoteControls() {
@@ -144,8 +142,6 @@ public class RemoteControlProvisioner {
     }
 
     /**
-     * Not thread safe.
-     *
      * @return All reserved remote controls. Never null.
      */
     public List<RemoteControlProxy> reservedRemoteControls() {
@@ -186,8 +182,6 @@ public class RemoteControlProvisioner {
     }
 
     /**
-     * Non-blocking, not thread-safe
-     *
      * @return Next Available remote control. Null if none is available.
      */
     protected RemoteControlProxy findNextAvailableRemoteControl() {
