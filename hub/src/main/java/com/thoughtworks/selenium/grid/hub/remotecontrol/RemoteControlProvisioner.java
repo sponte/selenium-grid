@@ -34,21 +34,18 @@ public class RemoteControlProvisioner {
     }
 
     public RemoteControlProxy reserve() {
-        RemoteControlProxy remoteControl;
+        remoteControlListLock.lock();
 
         try {
-            remoteControlListLock.lock();
-
             if (remoteControls.isEmpty()) {
                 return null;
             }
 
-            remoteControl = blockUntilARemoteControlIsAvailableOrRequestTimesOut();
+            RemoteControlProxy remoteControl = blockUntilARemoteControlIsAvailableOrRequestTimesOut();
             if (null == remoteControl) {
                 LOGGER.info("Timed out waiting for a remote control for environment.");
                 return null;
             }
-
 
             while (remoteControl.unreliable()) {
                 LOGGER.warn("Reserved RC " + remoteControl + " is detected as unreliable, unregistering it and reserving a new one...");
@@ -71,8 +68,9 @@ public class RemoteControlProvisioner {
     }
 
     public void release(RemoteControlProxy remoteControl) {
+        remoteControlListLock.lock();
+
         try {
-            remoteControlListLock.lock();
             remoteControl.unregisterSession();
             LOGGER.info("Released remote control" + remoteControl);
             signalThatARemoteControlHasBeenMadeAvailable();
@@ -82,8 +80,9 @@ public class RemoteControlProvisioner {
     }
 
     public void add(RemoteControlProxy newRemoteControl) {
+        remoteControlListLock.lock();
+
         try {
-            remoteControlListLock.lock();
             if (remoteControls.contains(newRemoteControl)) {
                 tearDownExistingRemoteControl(newRemoteControl);
             }
@@ -107,8 +106,9 @@ public class RemoteControlProvisioner {
     }
 
     public boolean remove(RemoteControlProxy remoteControl) {
+        remoteControlListLock.lock();
+
         try {
-            remoteControlListLock.lock();
             return remoteControls.remove(remoteControl);
         } finally {
             remoteControlListLock.unlock();
