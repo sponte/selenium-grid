@@ -29,14 +29,14 @@ public class IOHelper {
      * @throws java.io.IOException on IO error.
      */
     public static void copyStream(InputStream in, Writer out, int copyBufferSize) throws IOException {
-        InputStreamReader reader = null;
+        final InputStreamReader reader = new InputStreamReader(in);
 
         try {
-            reader = new InputStreamReader(in);
             copyStream(reader, out, copyBufferSize);
         } finally {
             close(reader);
         }
+
         out.flush();
     }
 

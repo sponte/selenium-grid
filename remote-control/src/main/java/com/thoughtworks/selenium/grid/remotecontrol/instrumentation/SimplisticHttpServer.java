@@ -27,23 +27,24 @@ public class SimplisticHttpServer {
     }
 
     public void start() throws Exception {
-        final ServerSocket serverSocket;
-        
-        serverSocket = new ServerSocket(port);
-        LOGGER.info("Now listening for incoming connections on " + serverSocket.getLocalSocketAddress() + ":" + serverSocket.getLocalPort());
-        while (true) {
-            processHttpRequest(serverSocket.accept());
+        final ServerSocket serverSocket = new ServerSocket(port);
+
+        try {
+            LOGGER.info("Now listening for incoming connections on " + serverSocket.getLocalSocketAddress() + ":" + serverSocket.getLocalPort());
+            while (true) {
+                processHttpRequest(serverSocket.accept());
+            }
+        } finally {
+            serverSocket.close();
         }
     }
 
-    protected void processHttpRequest(Socket socket) throws Exception {
-        BufferedReader reader = null;
-        BufferedWriter writer = null;
+    protected void processHttpRequest(final Socket socket) throws Exception {
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        final BufferedWriter writer =  new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
         LOGGER.info("Accepted connection from" + socket.getInetAddress() + ":" + socket.getPort());
         try {
-            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             requestProcessor.process(Request.parse(reader)).write(writer);
         } finally {
             IOHelper.close(writer);

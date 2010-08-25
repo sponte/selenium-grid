@@ -16,17 +16,19 @@ public class JVMHandle {
         this.process = process;
     }
 
-    public int waitForProg(PrintStream outputStream) throws IOException {
-        InputStream is = null;
-        InputStreamReader isr = null;
+    public int waitForProg(final PrintStream outputStream) throws IOException {
+        final InputStream is = process.getInputStream();
+        final InputStreamReader isr = new InputStreamReader(is);
 
-        is = process.getInputStream();
-        isr = new InputStreamReader(is);
         BufferedReader br = new BufferedReader(isr);
 
-        String line;        
-        while ((line = br.readLine()) != null) {
-            outputStream.println(line);
+        try {
+            String line;
+            while ((line = br.readLine()) != null) {
+                outputStream.println(line);
+            }
+        } finally {
+            br.close();
         }
 
         return process.exitValue();
