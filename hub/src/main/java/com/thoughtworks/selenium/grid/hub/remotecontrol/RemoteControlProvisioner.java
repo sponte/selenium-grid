@@ -206,13 +206,18 @@ public class RemoteControlProvisioner {
 
 
     public List<RemoteControlProxy> allRemoteControls() {
-        final LinkedList<RemoteControlProxy> allRemoteControls;
+        final LinkedList<RemoteControlProxy> allRemoteControls = new LinkedList<RemoteControlProxy>();
 
-        allRemoteControls = new LinkedList<RemoteControlProxy>();
-        for (RemoteControlProxy remoteControl : remoteControls) {
-            allRemoteControls.add(remoteControl);
+        remoteControlListLock.lock();
+
+        try {
+            for (RemoteControlProxy remoteControl : remoteControls) {
+                allRemoteControls.add(remoteControl);
+            }
+
+            return allRemoteControls;
+        } finally {
+            remoteControlListLock.unlock();
         }
-
-        return allRemoteControls;
     }
 }

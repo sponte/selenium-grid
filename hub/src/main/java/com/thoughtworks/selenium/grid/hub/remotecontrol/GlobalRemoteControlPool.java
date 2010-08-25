@@ -13,63 +13,53 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Monolithic Remote Control Pool keeping track of all environment and all sessions.
  */
 public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
-
     private static final Log LOGGER = LogFactory.getLog(GlobalRemoteControlPool.class);
-    private final Map<String, RemoteControlSession> remoteControlsBySessionIds;
-    private final Map<String, RemoteControlProvisioner> provisionersByEnvironment;
-
-    public GlobalRemoteControlPool() {
-        remoteControlsBySessionIds = new HashMap<String, RemoteControlSession>();
-        provisionersByEnvironment = new HashMap<String, RemoteControlProvisioner>();
-    }
+    private final Map<String, RemoteControlSession> remoteControlsBySessionIds = new HashMap<String, RemoteControlSession>();
+    private final ConcurrentHashMap<String, RemoteControlProvisioner> provisionersByEnvironment = new ConcurrentHashMap<String, RemoteControlProvisioner>();
 
     public void register(RemoteControlProxy newRemoteControl) {
-        final RemoteControlProvisioner provisioner;
+        provisionersByEnvironment.putIfAbsent(newRemoteControl.environment(), new RemoteControlProvisioner());
 
-        synchronized(provisionersByEnvironment) {
-            if (null == getProvisioner(newRemoteControl.environment())) {
-                createNewProvisionerForEnvironment(newRemoteControl.environment());
-            }
-            provisioner = getProvisioner(newRemoteControl.environment());
-            provisioner.add(newRemoteControl);
-        }
+        final RemoteControlProvisioner provisioner = getProvisioner(newRemoteControl.environment());
+        provisioner.add(newRemoteControl);
     }
 
     public boolean unregister(RemoteControlProxy remoteControl) {
-        final boolean status;
+        // First pull the remote control out of the list of RCs registered for the environment.
+        final boolean unregistered = getProvisioner(remoteControl.environment()).remove(remoteControl);
 
-        synchronized(provisionersByEnvironment) {
-            synchronized (remoteControlsBySessionIds) {
-                Set<RemoteControlSession> sessionsToRemove = new HashSet<RemoteControlSession>();
+        if (unregistered) {
+            Set<RemoteControlSession> sessionsToRemove = new HashSet<RemoteControlSession>();
 
-                status = getProvisioner(remoteControl.environment()).remove(remoteControl);
-                for (RemoteControlSession session : remoteControlsBySessionIds.values()) {
-                    if (session.remoteControl().equals(remoteControl)) {
-                        sessionsToRemove.add(session);
-                    }
-                }
-
-                // Remove the session separately from the loop where we found it to avoid issues with concurrent modification.
-                for (RemoteControlSession session : sessionsToRemove) {
-                    removeFromSessionMap(session);
+            // Now find all sessions associated with the RC.
+            for (RemoteControlSession session : remoteControlsBySessionIds.values()) {
+                if (session.remoteControl().equals(remoteControl)) {
+                    sessionsToRemove.add(session);
                 }
             }
+
+            // Remove the session separately from the loop where we found it to avoid issues with concurrent modification.
+            for (RemoteControlSession session : sessionsToRemove) {
+                removeFromSessionMap(session);
+            }
         }
-        return status;
+
+        return unregistered;
     }
 
     public RemoteControlProxy reserve(Environment environment) {
-        final RemoteControlProvisioner provisioner;
-        
-        provisioner = getProvisioner(environment.name());
+        final RemoteControlProvisioner provisioner = getProvisioner(environment.name());
+
         if (null == provisioner) {
             throw new NoSuchEnvironmentException(environment.name());
         }
+
         return provisioner.reserve();
     }
 
@@ -136,13 +126,10 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
     }
 
     public List<RemoteControlProxy> allRegisteredRemoteControls() {
-        final List<RemoteControlProxy> allRemoteControls;
-
-        allRemoteControls = new LinkedList<RemoteControlProxy>();
-        synchronized(provisionersByEnvironment) {
-            for (RemoteControlProvisioner provisioner : provisionersByEnvironment.values()) {
-                allRemoteControls.addAll(provisioner.allRemoteControls());
-            }
+        final List<RemoteControlProxy> allRemoteControls = new LinkedList<RemoteControlProxy>();
+        
+        for (RemoteControlProvisioner provisioner : provisionersByEnvironment.values()) {
+            allRemoteControls.addAll(provisioner.allRemoteControls());
         }
 
         return allRemoteControls;
@@ -193,8 +180,8 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         }
     }
 
-    protected void createNewProvisionerForEnvironment(String environemntName) {
-        provisionersByEnvironment.put(environemntName, new RemoteControlProvisioner());
+    protected void createNewProvisionerForEnvironment(String environment) {
+        provisionersByEnvironment.put(environment, new RemoteControlProvisioner());
     }
 
     public void unregisterAllUnresponsiveRemoteControls() {
