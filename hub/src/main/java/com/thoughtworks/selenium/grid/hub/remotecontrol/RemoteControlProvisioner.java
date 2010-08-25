@@ -121,15 +121,20 @@ public class RemoteControlProvisioner {
      * @return All available remote controls. Never null.
      */
     public List<RemoteControlProxy> availableRemoteControls() {
-        final LinkedList<RemoteControlProxy> availableremoteControls;
+        final LinkedList<RemoteControlProxy> availableremoteControls = new LinkedList<RemoteControlProxy>();
 
-        availableremoteControls = new LinkedList<RemoteControlProxy>();
-        for (RemoteControlProxy remoteControl : remoteControls) {
-            if (remoteControl.canHandleNewSession()) {
-                availableremoteControls.add(remoteControl);
+        remoteControlListLock.lock();
+
+        try {
+            for (RemoteControlProxy remoteControl : remoteControls) {
+                if (remoteControl.canHandleNewSession()) {
+                    availableremoteControls.add(remoteControl);
+                }
             }
+            return Arrays.asList(availableremoteControls.toArray(new RemoteControlProxy[availableremoteControls.size()]));
+        } finally {
+            remoteControlListLock.unlock();
         }
-        return Arrays.asList(availableremoteControls.toArray(new RemoteControlProxy[availableremoteControls.size()]));
     }
 
     /**
@@ -138,15 +143,21 @@ public class RemoteControlProvisioner {
      * @return All reserved remote controls. Never null.
      */
     public List<RemoteControlProxy> reservedRemoteControls() {
-        final LinkedList<RemoteControlProxy> reservedRemoteControls;
+        final LinkedList<RemoteControlProxy> reservedRemoteControls = new LinkedList<RemoteControlProxy>();
 
-        reservedRemoteControls = new LinkedList<RemoteControlProxy>();
-        for (RemoteControlProxy remoteControl : remoteControls) {
-            if (remoteControl.sessionInProgress()) {
-                reservedRemoteControls.add(remoteControl);
+        remoteControlListLock.lock();
+
+        try {
+            for (RemoteControlProxy remoteControl : remoteControls) {
+                if (remoteControl.sessionInProgress()) {
+                    reservedRemoteControls.add(remoteControl);
+                }
             }
+
+            return Arrays.asList(reservedRemoteControls.toArray(new RemoteControlProxy[reservedRemoteControls.size()]));
+        } finally {
+            remoteControlListLock.unlock();
         }
-        return Arrays.asList(reservedRemoteControls.toArray(new RemoteControlProxy[reservedRemoteControls.size()]));
     }
 
     protected RemoteControlProxy blockUntilARemoteControlIsAvailableOrRequestTimesOut() {
@@ -174,12 +185,19 @@ public class RemoteControlProvisioner {
      * @return Next Available remote control. Null if none is available.
      */
     protected RemoteControlProxy findNextAvailableRemoteControl() {
-        for (RemoteControlProxy remoteControl : remoteControls) {
-            if (remoteControl.canHandleNewSession()) {
-                return remoteControl;
+        remoteControlListLock.lock();
+
+        try {
+            for (RemoteControlProxy remoteControl : remoteControls) {
+                if (remoteControl.canHandleNewSession()) {
+                    return remoteControl;
+                }
             }
+
+            return null;
+        } finally {
+            remoteControlListLock.unlock();
         }
-        return null;
     }
 
   /**
