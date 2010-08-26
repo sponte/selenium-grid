@@ -36,18 +36,14 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         final boolean unregistered = provisioners.get(remoteControl.environment()).remove(remoteControl);
 
         if (unregistered) {
-            Set<RemoteControlSession> sessionsToRemove = new HashSet<RemoteControlSession>();
+            // Find all sessions associated with the RC and and remove them.
+            // Use a real iterator to avoid issues with concurrent modification.
+            for (final Iterator<Map.Entry<String, RemoteControlSession>> it = sessions.entrySet().iterator(); it.hasNext();) {
+                final Map.Entry<String, RemoteControlSession> entry = it.next();
 
-            // Now find all sessions associated with the RC.
-            for (RemoteControlSession session : sessions.values()) {
-                if (session.remoteControl().equals(remoteControl)) {
-                    sessionsToRemove.add(session);
+                if (entry.getValue().remoteControl().equals(remoteControl)) {
+                    it.remove();
                 }
-            }
-
-            // Remove the session separately from the loop where we found it to avoid issues with concurrent modification.
-            for (RemoteControlSession session : sessionsToRemove) {
-                removeFromSessionMap(session);
             }
         }
 
@@ -154,17 +150,6 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         }
 
         return session.remoteControl();
-    }
-
-    protected void removeFromSessionMap(RemoteControlSession session) {
-        // Use a real iterator to avoid issues with concurrent modification.
-        for (final Iterator<Map.Entry<String, RemoteControlSession>> it = sessions.entrySet().iterator(); it.hasNext();) {
-            final Map.Entry<String, RemoteControlSession> entry = it.next();
-
-            if (entry.getValue().equals(session)) {
-                it.remove();
-            }
-        }
     }
 
     protected void logSessionMap() {
