@@ -38,11 +38,13 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         if (unregistered) {
             // Find all sessions associated with the RC and and remove them.
             // Use a real iterator to avoid issues with concurrent modification.
-            for (final Iterator<Map.Entry<String, RemoteControlSession>> it = sessions.entrySet().iterator(); it.hasNext();) {
-                final Map.Entry<String, RemoteControlSession> entry = it.next();
+            synchronized(sessions) {
+                for (final Iterator<Map.Entry<String, RemoteControlSession>> it = sessions.entrySet().iterator(); it.hasNext();) {
+                    final Map.Entry<String, RemoteControlSession> entry = it.next();
 
-                if (entry.getValue().remoteControl().equals(remoteControl)) {
-                    it.remove();
+                    if (entry.getValue().remoteControl().equals(remoteControl)) {
+                        it.remove();
+                    }
                 }
             }
         }
