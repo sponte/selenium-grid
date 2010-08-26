@@ -7,7 +7,7 @@ public class RemoteControlPoller implements Runnable {
     private final long pollingIntervalInMilliseconds;
     private final double sessionMaxIdleTimeInSeconds;
     private final DynamicRemoteControlPool pool;
-    private boolean active;
+    private volatile boolean active;
 
     private static final Log LOGGER = LogFactory.getLog(RemoteControlPoller.class);
 
