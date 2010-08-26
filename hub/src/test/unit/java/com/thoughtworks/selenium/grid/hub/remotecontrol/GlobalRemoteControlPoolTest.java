@@ -791,9 +791,9 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
         pool.associateWithSession(remoteControl, "a session id");
         now = new Date().getTime();
         creationTime = now - 10;
-        pool.getRemoteControlSession("a session id").updateLastActiveAt(creationTime);
+        pool.getSessions().get("a session id").updateLastActiveAt(creationTime);
         pool.updateSessionLastActiveAt("a session id");
-        session = pool.getRemoteControlSession("a session id");
+        session = pool.getSessions().get("a session id");
         assertTrue(session.lastActiveAt() > creationTime);
         assertTrue(session.lastActiveAt() >= now);
         assertTrue(session.lastActiveAt() <= now + 10 * 1000);

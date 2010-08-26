@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
     private static final Log LOGGER = LogFactory.getLog(GlobalRemoteControlPool.class);
-    private final Map<String, RemoteControlSession> remoteControlsBySessionIds = new HashMap<String, RemoteControlSession>();
+    private final Map<String, RemoteControlSession> sessions = new HashMap<String, RemoteControlSession>();
     private final ConcurrentMap<String, RemoteControlProvisioner> provisioners = new ConcurrentHashMap<String, RemoteControlProvisioner>();
 
     public void register(RemoteControlProxy newRemoteControl) {
@@ -39,7 +39,7 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
             Set<RemoteControlSession> sessionsToRemove = new HashSet<RemoteControlSession>();
 
             // Now find all sessions associated with the RC.
-            for (RemoteControlSession session : remoteControlsBySessionIds.values()) {
+            for (RemoteControlSession session : sessions.values()) {
                 if (session.remoteControl().equals(remoteControl)) {
                     sessionsToRemove.add(session);
                 }
@@ -70,13 +70,13 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Asssociating " + sessionId + " => " + remoteControl);
         }
-        synchronized (remoteControlsBySessionIds) {
-            if (remoteControlsBySessionIds.containsKey(sessionId)) {
+        synchronized (sessions) {
+            if (sessions.containsKey(sessionId)) {
                 throw new IllegalStateException(
-                        "Session '" + sessionId + "' is already asssociated with " + remoteControlsBySessionIds.get(sessionId));
+                        "Session '" + sessionId + "' is already asssociated with " + sessions.get(sessionId));
             }
 
-            remoteControlsBySessionIds.put(sessionId, new RemoteControlSession(sessionId, remoteControl));
+            sessions.put(sessionId, new RemoteControlSession(sessionId, remoteControl));
         }
         if (LOGGER.isDebugEnabled()) {
             logSessionMap();
@@ -97,8 +97,8 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         final RemoteControlProxy remoteControl;
         remoteControl = getRemoteControlForSession(sessionId);
 
-        synchronized (remoteControlsBySessionIds) {
-            remoteControlsBySessionIds.remove(sessionId);
+        synchronized (sessions) {
+            sessions.remove(sessionId);
         }
         remoteControl.terminateSession(sessionId);
         provisioners.get(remoteControl.environment()).release(remoteControl);
@@ -148,7 +148,7 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
     protected RemoteControlProxy getRemoteControlForSession(String sessionId) {
         final RemoteControlSession session;
 
-        session = getRemoteControlSession(sessionId);
+        session = sessions.get(sessionId);
         if (null == session) {
             throw new NoSuchSessionException(sessionId);
         }
@@ -156,13 +156,9 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         return session.remoteControl();
     }
 
-    protected RemoteControlSession getRemoteControlSession(String sessionId) {
-        return remoteControlsBySessionIds.get(sessionId);
-    }
-
     protected void removeFromSessionMap(RemoteControlSession session) {
         // Use a real iterator to avoid issues with concurrent modification.
-        for (final Iterator<Map.Entry<String, RemoteControlSession>> it = remoteControlsBySessionIds.entrySet().iterator(); it.hasNext();) {
+        for (final Iterator<Map.Entry<String, RemoteControlSession>> it = sessions.entrySet().iterator(); it.hasNext();) {
             final Map.Entry<String, RemoteControlSession> entry = it.next();
 
             if (entry.getValue().equals(session)) {
@@ -172,7 +168,7 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
     }
 
     protected void logSessionMap() {
-        for (Map.Entry<String, RemoteControlSession> entry : remoteControlsBySessionIds.entrySet()) {
+        for (Map.Entry<String, RemoteControlSession> entry : sessions.entrySet()) {
             LOGGER.debug(entry.getKey() + " => " + entry.getValue());
         }
     }
@@ -191,7 +187,7 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
     }
 
     public void updateSessionLastActiveAt(String sessionId) {
-        getRemoteControlSession(sessionId).updateLastActiveAt();
+        sessions.get(sessionId).updateLastActiveAt();
     }
 
     public void recycleAllSessionsIdleForTooLong(double maxIdleTimeInSeconds) {
@@ -204,8 +200,8 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         final Set<RemoteControlSession> iteratorSafeCopy;
 
         iteratorSafeCopy = new HashSet<RemoteControlSession>();
-        synchronized (remoteControlsBySessionIds) {
-            for (Map.Entry<String, RemoteControlSession> entry : remoteControlsBySessionIds.entrySet()) {
+        synchronized (sessions) {
+            for (Map.Entry<String, RemoteControlSession> entry : sessions.entrySet()) {
                 iteratorSafeCopy.add(entry.getValue());
             }
         }
@@ -226,5 +222,11 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
     // able to inject mocked objects into the map.
     protected final ConcurrentMap<String, RemoteControlProvisioner> getProvisioners() {
         return provisioners;
+    }
+
+    // This should only be used by tests.  It's a hack that we even need it, but there are some benefits in being
+    // able to inject mocked objects into the map.
+    protected final Map<String, RemoteControlSession> getSessions() {
+        return sessions;
     }
 }
