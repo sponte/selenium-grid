@@ -82,7 +82,13 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
     }
 
     public RemoteControlProxy retrieve(String sessionId) {
-        return getRemoteControlForSession(sessionId);
+        final RemoteControlSession session = sessions.get(sessionId);
+
+        if (null == session) {
+            throw new NoSuchSessionException(sessionId);
+        }
+
+        return session.remoteControl();
     }
 
     public void release(RemoteControlProxy remoteControl) {
@@ -93,7 +99,7 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         LOGGER.info("Releasing pool for session id='" + sessionId + "'");
 
         final RemoteControlProxy remoteControl;
-        remoteControl = getRemoteControlForSession(sessionId);
+        remoteControl = retrieve(sessionId);
 
         synchronized (sessions) {
             sessions.remove(sessionId);
@@ -141,17 +147,6 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
             }
         }
         return false;
-    }
-
-    protected RemoteControlProxy getRemoteControlForSession(String sessionId) {
-        final RemoteControlSession session;
-
-        session = sessions.get(sessionId);
-        if (null == session) {
-            throw new NoSuchSessionException(sessionId);
-        }
-
-        return session.remoteControl();
     }
 
     protected void logSessionMap() {
