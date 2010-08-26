@@ -82,13 +82,15 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
     }
 
     public RemoteControlProxy retrieve(String sessionId) {
-        final RemoteControlSession session = sessions.get(sessionId);
+        synchronized(sessions) {
+            final RemoteControlSession session = sessions.get(sessionId);
 
-        if (null == session) {
-            throw new NoSuchSessionException(sessionId);
+            if (null == session) {
+                throw new NoSuchSessionException(sessionId);
+            }
+
+            return session.remoteControl();
         }
-
-        return session.remoteControl();
     }
 
     public void release(RemoteControlProxy remoteControl) {
@@ -150,8 +152,10 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
     }
 
     protected void logSessionMap() {
-        for (Map.Entry<String, RemoteControlSession> entry : sessions.entrySet()) {
-            LOGGER.debug(entry.getKey() + " => " + entry.getValue());
+        synchronized(sessions) {
+            for (Map.Entry<String, RemoteControlSession> entry : sessions.entrySet()) {
+                LOGGER.debug(entry.getKey() + " => " + entry.getValue());
+            }
         }
     }
 
@@ -169,7 +173,9 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
     }
 
     public void updateSessionLastActiveAt(String sessionId) {
-        sessions.get(sessionId).updateLastActiveAt();
+        synchronized(sessions) {
+            sessions.get(sessionId).updateLastActiveAt();
+        }
     }
 
     public void recycleAllSessionsIdleForTooLong(double maxIdleTimeInSeconds) {
@@ -209,6 +215,8 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
     // This should only be used by tests.  It's a hack that we even need it, but there are some benefits in being
     // able to inject mocked objects into the map.
     protected final Map<String, RemoteControlSession> getSessions() {
-        return sessions;
+        synchronized(sessions) {
+            return sessions;
+        }
     }
 }
