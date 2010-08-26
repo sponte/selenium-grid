@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Monolithic Remote Control Pool keeping track of all environment and all sessions.
@@ -21,18 +22,18 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
     private static final Log LOGGER = LogFactory.getLog(GlobalRemoteControlPool.class);
     private final Map<String, RemoteControlSession> remoteControlsBySessionIds = new HashMap<String, RemoteControlSession>();
-    private final ConcurrentHashMap<String, RemoteControlProvisioner> provisionersByEnvironment = new ConcurrentHashMap<String, RemoteControlProvisioner>();
+    private final ConcurrentMap<String, RemoteControlProvisioner> provisioners = new ConcurrentHashMap<String, RemoteControlProvisioner>();
 
     public void register(RemoteControlProxy newRemoteControl) {
-        provisionersByEnvironment.putIfAbsent(newRemoteControl.environment(), new RemoteControlProvisioner());
+        provisioners.putIfAbsent(newRemoteControl.environment(), new RemoteControlProvisioner());
 
-        final RemoteControlProvisioner provisioner = getProvisioner(newRemoteControl.environment());
+        final RemoteControlProvisioner provisioner = provisioners.get(newRemoteControl.environment());
         provisioner.add(newRemoteControl);
     }
 
     public boolean unregister(RemoteControlProxy remoteControl) {
         // First pull the remote control out of the list of RCs registered for the environment.
-        final boolean unregistered = getProvisioner(remoteControl.environment()).remove(remoteControl);
+        final boolean unregistered = provisioners.get(remoteControl.environment()).remove(remoteControl);
 
         if (unregistered) {
             Set<RemoteControlSession> sessionsToRemove = new HashSet<RemoteControlSession>();
@@ -54,7 +55,7 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
     }
 
     public RemoteControlProxy reserve(Environment environment) {
-        final RemoteControlProvisioner provisioner = getProvisioner(environment.name());
+        final RemoteControlProvisioner provisioner = provisioners.get(environment.name());
 
         if (null == provisioner) {
             throw new NoSuchEnvironmentException(environment.name());
@@ -87,7 +88,7 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
     }
 
     public void release(RemoteControlProxy remoteControl) {
-        getProvisioner(remoteControl.environment()).release(remoteControl);
+        provisioners.get(remoteControl.environment()).release(remoteControl);
     }
 
     public void releaseForSession(String sessionId) {
@@ -100,14 +101,14 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
             remoteControlsBySessionIds.remove(sessionId);
         }
         remoteControl.terminateSession(sessionId);
-        getProvisioner(remoteControl.environment()).release(remoteControl);
+        provisioners.get(remoteControl.environment()).release(remoteControl);
     }
 
     public List<RemoteControlProxy> availableRemoteControls() {
         final List<RemoteControlProxy> availableRemoteControls;
 
         availableRemoteControls = new LinkedList<RemoteControlProxy>();
-        for (RemoteControlProvisioner provisioner : provisionersByEnvironment.values()) {
+        for (RemoteControlProvisioner provisioner : provisioners.values()) {
             availableRemoteControls.addAll(provisioner.availableRemoteControls());
         }
 
@@ -118,7 +119,7 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         final List<RemoteControlProxy> reservedRemoteControls;
 
         reservedRemoteControls = new LinkedList<RemoteControlProxy>();
-        for (RemoteControlProvisioner provisioner : provisionersByEnvironment.values()) {
+        for (RemoteControlProvisioner provisioner : provisioners.values()) {
             reservedRemoteControls.addAll(provisioner.reservedRemoteControls());
         }
 
@@ -128,7 +129,7 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
     public List<RemoteControlProxy> allRegisteredRemoteControls() {
         final List<RemoteControlProxy> allRemoteControls = new LinkedList<RemoteControlProxy>();
         
-        for (RemoteControlProvisioner provisioner : provisionersByEnvironment.values()) {
+        for (RemoteControlProvisioner provisioner : provisioners.values()) {
             allRemoteControls.addAll(provisioner.allRemoteControls());
         }
 
@@ -136,16 +137,12 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
     }
 
     public boolean isRegistered(RemoteControlProxy remoteControl) {
-        for (RemoteControlProvisioner provisioner : provisionersByEnvironment.values()) {
+        for (RemoteControlProvisioner provisioner : provisioners.values()) {
             if (provisioner.contains(remoteControl)) {
                 return true;
             }
         }
         return false;
-    }
-
-    public RemoteControlProvisioner getProvisioner(String environment) {
-        return provisionersByEnvironment.get(environment);
     }
 
     protected RemoteControlProxy getRemoteControlForSession(String sessionId) {
@@ -225,4 +222,9 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         }
     }
 
+    // This should only be used by tests.  It's a hack that we even need it, but there are some benefits in being
+    // able to inject mocked objects into the map.
+    protected final ConcurrentMap<String, RemoteControlProvisioner> getProvisioners() {
+        return provisioners;
+    }
 }

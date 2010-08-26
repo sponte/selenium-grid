@@ -24,18 +24,11 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
 
     @Test
     public void registerAddsTheRemoteControlToTheProvisioner() {
-        final Mock provisioner;
-        final RemoteControlProxy remoteControl;
-        final GlobalRemoteControlPool pool;
+        final Mock provisioner = mock(RemoteControlProvisioner.class);
+        final RemoteControlProxy remoteControl = new RemoteControlProxy("", 0, "an environment", null);
+        final GlobalRemoteControlPool pool = new GlobalRemoteControlPool();
 
-        remoteControl = new RemoteControlProxy("", 0, "an environment", null);
-        provisioner = mock(RemoteControlProvisioner.class);
-        pool = new GlobalRemoteControlPool() {
-            public RemoteControlProvisioner getProvisioner(String environment) {
-                assertEquals("an environment", environment);
-                return (RemoteControlProvisioner) provisioner;
-            }
-        };
+        pool.getProvisioners().put("an environment", (RemoteControlProvisioner) provisioner.proxy());
         provisioner.expects("add").with(remoteControl);
 
         pool.register(remoteControl);
@@ -44,19 +37,11 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
 
     @Test
     public void unregisterReturnsTheResultOfProvisionerRemove() {
-        final Mock provisioner;
-        final RemoteControlProxy remoteControl;
-        final GlobalRemoteControlPool pool;
+        final Mock provisioner = mock(RemoteControlProvisioner.class);
+        final RemoteControlProxy remoteControl = new RemoteControlProxy("", 0, "an environment", null);
+        final GlobalRemoteControlPool pool = new GlobalRemoteControlPool();
 
-        remoteControl = new RemoteControlProxy("", 0, "an environment", null);
-        provisioner = mock(RemoteControlProvisioner.class);
-        pool = new GlobalRemoteControlPool() {
-            public RemoteControlProvisioner getProvisioner(String environment) {
-                assertEquals("an environment", environment);
-                return (RemoteControlProvisioner) provisioner;
-            }
-        };
-
+        pool.getProvisioners().put("an environment", (RemoteControlProvisioner) provisioner.proxy());
         provisioner.expects("remove").with(remoteControl).will(returnValue(false));
         assertEquals(false, pool.unregister(remoteControl));
         verifyMocks();
@@ -65,19 +50,11 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
 
     @Test
     public void unregisterRemovesTheRemoteControlToTheProvisioner() {
-        final Mock provisioner;
-        final RemoteControlProxy remoteControl;
-        final GlobalRemoteControlPool pool;
+        final Mock provisioner = mock(RemoteControlProvisioner.class);
+        final RemoteControlProxy remoteControl = new RemoteControlProxy("", 0, "an environment", null);
+        final GlobalRemoteControlPool pool = new GlobalRemoteControlPool();
 
-        remoteControl = new RemoteControlProxy("", 0, "an environment", null);
-        provisioner = mock(RemoteControlProvisioner.class);
-        pool = new GlobalRemoteControlPool() {
-            public RemoteControlProvisioner getProvisioner(String environment) {
-                assertEquals("an environment", environment);
-                return (RemoteControlProvisioner) provisioner;
-            }
-        };
-
+        pool.getProvisioners().put("an environment", (RemoteControlProvisioner) provisioner.proxy());
         provisioner.expects("remove").with(remoteControl).will(returnValue(true));
         assertTrue(pool.unregister(remoteControl));
         verifyMocks();
@@ -107,19 +84,12 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
 
     @Test
     public void reserveReturnsTheRemoteControlReservedByTheProvisioner() {
-        final Mock provisioner;
-        final RemoteControlProxy remoteControl;
-        final GlobalRemoteControlPool pool;
+        final Mock provisioner = mock(RemoteControlProvisioner.class);
+        final RemoteControlProxy remoteControl = new RemoteControlProxy("", 0, "an environment", null);
+        final GlobalRemoteControlPool pool = new GlobalRemoteControlPool();
 
-        remoteControl = new RemoteControlProxy("", 0, "an environment", null);
-        provisioner = mock(RemoteControlProvisioner.class);
-        pool = new GlobalRemoteControlPool() {
-            public RemoteControlProvisioner getProvisioner(String environment) {
-                assertEquals("an environment", environment);
-                return (RemoteControlProvisioner) provisioner;
-            }
-        };
 
+        pool.getProvisioners().put("an environment", (RemoteControlProvisioner) provisioner.proxy());
         provisioner.expects("reserve").will(returnValue(remoteControl));
         assertEquals(remoteControl, pool.reserve(new Environment("an environment", "")));
         verifyMocks();
@@ -212,18 +182,12 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
 
     @Test
     public void releaseForSessionReleasesTheRemoteControlOnTheProvisioner() {
-        final Mock provisioner;
-        final RemoteControlProxy remoteControl;
-        final GlobalRemoteControlPool pool;
+        final Mock provisioner = mock(RemoteControlProvisioner.class);
+        final RemoteControlProxy remoteControl = new RemoteControlProxy("", 0, "an environment", new HttpClient());
+        final GlobalRemoteControlPool pool  = new GlobalRemoteControlPool();
 
-        remoteControl = new RemoteControlProxy("", 0, "an environment", new HttpClient());
-        provisioner = mock(RemoteControlProvisioner.class);
-        pool = new GlobalRemoteControlPool() {
-            public RemoteControlProvisioner getProvisioner(String environment) {
-                assertEquals("an environment", environment);
-                return (RemoteControlProvisioner) provisioner;
-            }
-        };
+
+        pool.getProvisioners().put("an environment", (RemoteControlProvisioner) provisioner.proxy());
         pool.register(remoteControl);
         pool.associateWithSession(remoteControl, "a session id");
 
@@ -242,19 +206,11 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
 
     @Test
     public void releaseReleasesTheRemoteControlOnTheProvisioner() {
-        final Mock provisioner;
-        final RemoteControlProxy remoteControl;
-        final GlobalRemoteControlPool pool;
+        final Mock provisioner = mock(RemoteControlProvisioner.class);
+        final RemoteControlProxy remoteControl = new RemoteControlProxy("", 0, "an environment", null);
+        final GlobalRemoteControlPool pool = new GlobalRemoteControlPool();
 
-        remoteControl = new RemoteControlProxy("", 0, "an environment", null);
-        provisioner = mock(RemoteControlProvisioner.class);
-        pool = new GlobalRemoteControlPool() {
-            public RemoteControlProvisioner getProvisioner(String environment) {
-                assertEquals("an environment", environment);
-                return (RemoteControlProvisioner) provisioner;
-            }
-        };
-
+        pool.getProvisioners().put("an environment", (RemoteControlProvisioner) provisioner.proxy());
         provisioner.expects("release").with(remoteControl);
 
         pool.release(remoteControl);
