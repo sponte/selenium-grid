@@ -20,10 +20,10 @@ public class HubRegistry {
 
     private static final Log LOGGER = LogFactory.getLog(HubRegistry.class);
     private static HubRegistry singleton;
-    private DynamicRemoteControlPool pool;
+    private final DynamicRemoteControlPool pool = new GlobalRemoteControlPool();
+    private final LifecycleManager lifecycleManager = new LifecycleManager();
     private EnvironmentManager environmentManager;
     private GridConfiguration gridConfiguration;
-    private LifecycleManager lifecycleManager;
     private RemoteControlPoller poller;
 
     public static synchronized HubRegistry registry() {
@@ -33,10 +33,7 @@ public class HubRegistry {
         return singleton;
     }
 
-    public synchronized DynamicRemoteControlPool remoteControlPool() {
-        if (null == pool) {
-            pool = new GlobalRemoteControlPool();
-        }
+    public DynamicRemoteControlPool remoteControlPool() {
         return pool;
     }
 
@@ -61,10 +58,7 @@ public class HubRegistry {
         return gridConfiguration;
     }
 
-    public synchronized LifecycleManager lifecycleManager() {
-        if (null == lifecycleManager) {
-            lifecycleManager = new LifecycleManager();
-        }
+    public LifecycleManager lifecycleManager() {
         return lifecycleManager;
     }
 
