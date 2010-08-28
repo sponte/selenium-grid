@@ -4,32 +4,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Keep track of the environments offered by the Selenium farm.
  */
 public class EnvironmentManager {
 
-    private final Map<String, Environment> environmentMap;
-
-    public EnvironmentManager() {
-        this.environmentMap = new HashMap<String, Environment>();
-    }
+    private final ConcurrentMap<String, Environment> environmentMap = new ConcurrentHashMap<String, Environment>();
 
     public List<Environment> environments() {
         return new ArrayList<Environment>(environmentMap.values());
     }
 
     public void addEnvironment(Environment newEnvironment) {
-        synchronized (environmentMap) {
-            environmentMap.put(newEnvironment.name(), newEnvironment);
-        }
+        environmentMap.put(newEnvironment.name(), newEnvironment);
     }
 
     public Environment environment(String environmentName) {
-        synchronized (environmentMap) {
-            return environmentMap.get(environmentName);
-        }
+        return environmentMap.get(environmentName);
     }
 
 }
