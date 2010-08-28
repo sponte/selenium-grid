@@ -13,6 +13,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Monolithic Remote Control Pool keeping track of all environment and all sessions.
@@ -20,13 +22,8 @@ import java.util.Set;
 public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
 
     private static final Log LOGGER = LogFactory.getLog(GlobalRemoteControlPool.class);
-    private final Map<String, RemoteControlSession> remoteControlsBySessionIds;
-    private final Map<String, RemoteControlProvisioner> provisionersByEnvironment;
-
-    public GlobalRemoteControlPool() {
-        remoteControlsBySessionIds = new HashMap<String, RemoteControlSession>();
-        provisionersByEnvironment = new HashMap<String, RemoteControlProvisioner>();
-    }
+    private final ConcurrentMap<String, RemoteControlSession> remoteControlsBySessionIds = new ConcurrentHashMap<String, RemoteControlSession>();
+    private final ConcurrentMap<String, RemoteControlProvisioner> provisionersByEnvironment = new ConcurrentHashMap<String, RemoteControlProvisioner>();
 
     public void register(RemoteControlProxy newRemoteControl) {
         final RemoteControlProvisioner provisioner;
