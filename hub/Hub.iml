@@ -18,6 +18,7 @@
     <orderEntry type="library" name="Hub Resources" level="project" />
     <orderEntry type="library" name="Commons" level="project" />
     <orderEntry type="module" module-name="Core" />
+    <orderEntry type="library" name="JSON" level="project" />
   </component>
   <component name="RSpecModuleSettingsStorage">
     <RSPEC_MODULE_SETTINGS_STORAGE_ID NAME="RSPEC_SUPPORT_TYPE" VALUE="NONE" />

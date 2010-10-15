@@ -742,7 +742,9 @@
         <root url="jar://$PROJECT_DIR$/vendor/selenium-server-standalone-2.0a6.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="file://$PROJECT_DIR$/../../selenium-read-only/remote/server/src/java" />
+      </SOURCES>
     </library>
     <library name="Web">
       <CLASSES>
@@ -786,6 +788,13 @@
     <library name="JUnit">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/vendor/junit-4.7.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="JSON">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/vendor/json.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

@@ -5,6 +5,7 @@ import com.thoughtworks.selenium.grid.Response;
 import com.thoughtworks.selenium.grid.hub.remotecontrol.IRemoteControlProxy;
 import com.thoughtworks.selenium.grid.hub.remotecontrol.RemoteControlPool;
 import com.thoughtworks.selenium.grid.hub.remotecontrol.commands.IDriverCommand;
+import com.thoughtworks.selenium.grid.hub.remotecontrol.commands.RemoteControlMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -53,6 +54,8 @@ public class WebDriverCommand implements IDriverCommand {
             return new Response("Selenium Driver error: No sessionId provided for command '" + parameters().toString() + "'");
         }
         remoteControl = pool.retrieve(sessionId());
+        remoteControl.setMode(RemoteControlMode.WebDriver);
+        remoteControl.setRequest(request());
         pool.updateSessionLastActiveAt(sessionId);
         response = remoteControl.forward(request());
         pool.updateSessionLastActiveAt(sessionId);

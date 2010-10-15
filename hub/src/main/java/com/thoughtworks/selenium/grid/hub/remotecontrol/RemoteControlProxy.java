@@ -88,11 +88,22 @@ public class RemoteControlProxy implements IRemoteControlProxy {
                 return httpClient.getWebDriverRequest(remoteWebDriverControlDriverURL(request.getRequestURI()), request);
             }
         } else {
-            return httpClient.post(remoteControlDriverURL(), new HttpParameters(request.getParameterMap()));
+            return httpClient.post(remoteControlDriverURL(), GetHttpParametersFromHttpServletRequest(request));
         }
     }
 
+    private HttpParameters GetHttpParametersFromHttpServletRequest(HttpServletRequest request) {
+        if (request == null) {
+            return new HttpParameters(new HashMap<String, String[]>() {
+            });
+        }
+        return new HttpParameters(request.getParameterMap());
+    }
+
     private boolean IsWebDriverRequest(HttpServletRequest request) {
+        if (request == null) {
+            return false;
+        }
         String requestUri = (String) request.getRequestURI();
         if (requestUri != null && requestUri.startsWith("/wd/hub")) {
             return true;
@@ -142,6 +153,10 @@ public class RemoteControlProxy implements IRemoteControlProxy {
     }
 
     public void terminateSession(String sessionId) {
+        // WebDriver request does not need this
+        if (IsWebDriverRequest(request)) {
+            return;
+        }
         try {
             Map<String, String[]> params = new HashMap<String, String[]>();
             params.put("cmd", new String[]{"testComplete"});

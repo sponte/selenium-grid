@@ -67,6 +67,7 @@
             <sysproperty key="http.proxyPort" value="${http.proxyPort}"/>
             <sysproperty key="https.proxyHost" value="${https.proxyHost}"/>
             <sysproperty key="https.proxyPort" value="${https.proxyPort}"/>
+            <jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,address=5007,suspend=n"/>
 
             <arg value="-port"/>
             <arg value="${port}"/>
