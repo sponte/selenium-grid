@@ -1,14 +1,15 @@
 package com.thoughtworks.selenium.grid.hub.management;
 
 import com.thoughtworks.selenium.grid.HttpClient;
+import com.thoughtworks.selenium.grid.hub.remotecontrol.IRemoteControlProxy;
 import com.thoughtworks.selenium.grid.hub.remotecontrol.RemoteControlProxy;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class RemoteControlParser {
 
-    public static RemoteControlProxy parse(HttpServletRequest request) {
-        final RemoteControlProxy remoteControl;
+    public static IRemoteControlProxy parse(HttpServletRequest request) {
+        final IRemoteControlProxy remoteControl;
         final String portParameter;
         final String environment;
         final String host;

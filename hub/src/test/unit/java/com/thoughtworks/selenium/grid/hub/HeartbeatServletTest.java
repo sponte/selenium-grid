@@ -1,7 +1,5 @@
 package com.thoughtworks.selenium.grid.hub;
 
-import static junit.framework.Assert.assertEquals;
-
 import com.thoughtworks.selenium.grid.hub.remotecontrol.DynamicRemoteControlPool;
 import com.thoughtworks.selenium.grid.hub.remotecontrol.RemoteControlProxy;
 import org.jbehave.classmock.UsingClassMock;
@@ -12,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
+import static junit.framework.Assert.assertEquals;
 
 
 public class HeartbeatServletTest extends UsingClassMock {
@@ -65,7 +65,7 @@ public class HeartbeatServletTest extends UsingClassMock {
         servletResponse.expects("getWriter").will(returnValue(new PrintWriter(writer)));
         pool = mock(DynamicRemoteControlPool.class);
         pool.expects("isRegistered").with(eq(new RemoteControlProxy("a host", 1234, "", null))).will(returnValue(true));
-        
+
         new HeartbeatServlet() {
             @Override
             protected DynamicRemoteControlPool remoteControlPool() {

@@ -23,6 +23,10 @@ public class HttpParameters {
         this.parameterMap = new HashMap<String, String[]>();
     }
 
+    public boolean equals(Object other) {
+        return this.names().equals(((HttpParameters) other).names());
+    }
+
     public String get(String name) {
         final String[] values = parameterMap.get(name);
         if (null == values || 0 == values.length) {
@@ -55,8 +59,8 @@ public class HttpParameters {
             builder.append("\", ");
         }
         if (!parameterMap.isEmpty()) {
-          builder.deleteCharAt(builder.length() - 1);
-          builder.deleteCharAt(builder.length() - 1);
+            builder.deleteCharAt(builder.length() - 1);
+            builder.deleteCharAt(builder.length() - 1);
         }
 
         return builder.toString();

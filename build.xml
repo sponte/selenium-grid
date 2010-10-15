@@ -1,179 +1,183 @@
 <project name="Selenium Grid Distribution" basedir=".">
 
-  <description>Selenium Grid Distribution</description>
-  <property file="${basedir}/project.properties"/>
-  <property name="artifact" value="selenium-grid"/>
-  <property name="version" value="SNAPSHOT"/>
+    <description>Selenium Grid Distribution</description>
+    <property file="${basedir}/project.properties"/>
+    <property name="artifact" value="selenium-grid"/>
+    <property name="version" value="SNAPSHOT"/>
 
-  <property file="${basedir}/project.properties"/>
+    <property file="${basedir}/project.properties"/>
 
-  <import file="${basedir}/lib/build/common-build.xml" />
-  
-  <target name="sanity-check" description="Check that building tools are been installed and configured properly">
-    <property environment="env"/>
+    <import file="${basedir}/lib/build/common-build.xml"/>
 
-    <echo>${ant.version}</echo>
-    <condition property="ant-7">
-      <antversion atleast="1.7.0"/>
-    </condition>
-    <fail message="You need Ant 1.7 or newer" unless="ant-7"/>
+    <target name="sanity-check" description="Check that building tools are been installed and configured properly">
+        <property environment="env"/>
 
-    <echo>Java ${ant.java.version}</echo>
-    <condition property="java-5">
-      <not><matches pattern="^1\.[0-4]" string="${ant.java.version}"/></not>
-    </condition>
-    <fail message="Your must use Java 1.5 or newer. You are currrenltly using '${ant.java.version}'." unless="java-5"/>
+        <echo>${ant.version}</echo>
+        <condition property="ant-7">
+            <antversion atleast="1.7.0"/>
+        </condition>
+        <fail message="You need Ant 1.7 or newer" unless="ant-7"/>
 
-    <echo/>
-    <echo>******************************************************</echo>
-    <echo>Congratulations, your setup looks good. Happy hacking!</echo>
-    <echo>******************************************************</echo>
-    <echo/>
-    <echo>You can build the whole project by running 'ant dist'</echo>
+        <echo>Java ${ant.java.version}</echo>
+        <condition property="java-5">
+            <not>
+                <matches pattern="^1\.[0-4]" string="${ant.java.version}"/>
+            </not>
+        </condition>
+        <fail message="Your must use Java 1.5 or newer. You are currrenltly using '${ant.java.version}'."
+              unless="java-5"/>
 
-  </target>
+        <echo/>
+        <echo>******************************************************</echo>
+        <echo>Congratulations, your setup looks good. Happy hacking!</echo>
+        <echo>******************************************************</echo>
+        <echo/>
+        <echo>You can build the whole project by running 'ant dist'</echo>
 
-  <target name="ci:core" depends="clean, dist" description="Continuous Integration : Build and Unit Tests"/>
-  <target name="ci:metrics" depends="clean, metrics" description="Continuous Integration : Build and Unit Tests"/>
-  <target name="ci:demo" depends="clean, dist-bin, automated-demo" description="Continuous Integration : Demo"/>
-  <target name="ci:functionals" depends="clean, dist-bin, automated-ruby-example" description="Continuous Integration : Functional Tests"/>
+    </target>
 
-  <target name="clean" description="clean all generated artifacts">
-    <build-subprojects target="clean"/>
-    <delete dir="${dist}"/>
-    <delete dir="target"/>
-  </target>
+    <target name="ci:core" depends="clean, dist" description="Continuous Integration : Build and Unit Tests"/>
+    <target name="ci:metrics" depends="clean, metrics" description="Continuous Integration : Build and Unit Tests"/>
+    <target name="ci:demo" depends="clean, dist-bin, automated-demo" description="Continuous Integration : Demo"/>
+    <target name="ci:functionals" depends="clean, dist-bin, automated-ruby-example"
+            description="Continuous Integration : Functional Tests"/>
 
-  <target name="build" description="Package subprojects">
-    <build-subprojects target="build"/>
-  </target>
+    <target name="clean" description="clean all generated artifacts">
+        <build-subprojects target="clean"/>
+        <delete dir="${dist}"/>
+        <delete dir="target"/>
+    </target>
 
-  <target name="dist" depends="dist-bin" description="Build binary and source distributions"/>
+    <target name="build" description="Package subprojects">
+        <build-subprojects target="build"/>
+    </target>
 
-  <target name="build-bin-dist" description="Package subprojects">
+    <target name="dist" depends="dist-bin" description="Build binary and source distributions"/>
 
-    <build-subprojects target="dist"/>
+    <target name="build-bin-dist" description="Package subprojects">
 
-    <mkdir dir="${dist}/${artifact}-${version}"/>
-    <copy todir="${dist}/${artifact}-${version}/vendor" overwrite="true">
-      <fileset file="${basedir}/vendor/testng-5.7-jdk15.jar"/>
-      <fileset file="${basedir}/vendor/selenium-java-client-driver-${selenium.version}.jar"/>
-      <fileset file="${basedir}/vendor/selenium-server-${selenium.version}-standalone.jar"/>
-      <fileset file="${basedir}/vendor/commons-logging-1.1.1.jar"/>
-    </copy>
-    <copy todir="${dist}/${artifact}-${version}/lib" overwrite="true">
-      <fileset dir="${basedir}/hub/target/dist/lib"/>
-      <fileset dir="${basedir}/remote-control/target/dist/lib"/>
-      <fileset dir="${basedir}/tools/target/dist/lib"/>
-      <fileset dir="${basedir}/lib" includes="ruby/**/*.rb"/>
-      <fileset dir="${basedir}/lib" includes="build/common-build.xml"/>
-      <fileset dir="${basedir}/demo/target/dist/lib"/>
-      <fileset file="${basedir}/lib/testng.policy"/>
-    </copy>
-    <copy todir="${dist}/${artifact}-${version}" overwrite="true">
-      <fileset dir="${basedir}">
-        <include name="project.properties"/>
-        <include name="examples/**/*"/>
-        <exclude name="**/tmp/*"/>
-      </fileset>
-    </copy>
-    <mkdir dir="${dist}/${artifact}-${version}/sample-scripts"/>
-    <copy todir="${dist}/${artifact}-${version}/sample-scripts" overwrite="true">
-      <fileset dir="${basedir}/src/scripts">
-        <include name="*.sh"/>
-        <include name="*.rb"/>
-        <include name="*.osascript"/>
-      </fileset>
-    </copy>
-    <copy todir="${dist}/${artifact}-${version}" overwrite="true">
-      <fileset dir="${basedir}/src/scripts" includes="build.xml"/>
-      <fileset dir="${basedir}/src/scripts" includes="Rakefile"/>
-      <fileset dir="${basedir}/src/scripts" includes="Capfile"/>
-      <fileset dir="${basedir}/src/configuration" includes="*.yml"/>
-      <fileset dir="${basedir}">
-        <include name="doc/**/*"/>
-        <exclude name="doc/**/iMac.jpeg"/>
-        <exclude name="doc/**/macbookpro.jpg"/>
-        <exclude name="doc/**/DELL Server.jpg"/>
-        <exclude name="doc/**/applelogo.png"/>
-        <include name="README"/>
-      </fileset>
-    </copy>
-    <mkdir dir="${dist}/${artifact}-${version}/log"/>
-  </target>
+        <build-subprojects target="dist"/>
 
-  <target name="dist-bin" depends="build-bin-dist" description="Package binary distribution">
-    <zip destfile="${dist}/selenium-grid-${version}-bin.zip">
-      <fileset dir="${dist}" includes="${artifact}-${version}/**/*"/>
-    </zip>
-  </target>
+        <mkdir dir="${dist}/${artifact}-${version}"/>
+        <copy todir="${dist}/${artifact}-${version}/vendor" overwrite="true">
+            <fileset file="${basedir}/vendor/testng-5.7-jdk15.jar"/>
+            <fileset file="${basedir}/vendor/selenium-java-${selenium.version}.jar"/>
+            <fileset file="${basedir}/vendor/selenium-server-standalone-${selenium.version}.jar"/>
+            <fileset file="${basedir}/vendor/commons-logging-1.1.1.jar"/>
+        </copy>
+        <copy todir="${dist}/${artifact}-${version}/lib" overwrite="true">
+            <fileset dir="${basedir}/hub/target/dist/lib"/>
+            <fileset dir="${basedir}/remote-control/target/dist/lib"/>
+            <fileset dir="${basedir}/tools/target/dist/lib"/>
+            <fileset dir="${basedir}/lib" includes="ruby/**/*.rb"/>
+            <fileset dir="${basedir}/lib" includes="build/common-build.xml"/>
+            <fileset dir="${basedir}/demo/target/dist/lib"/>
+            <fileset file="${basedir}/lib/testng.policy"/>
+        </copy>
+        <copy todir="${dist}/${artifact}-${version}" overwrite="true">
+            <fileset dir="${basedir}">
+                <include name="project.properties"/>
+                <include name="examples/**/*"/>
+                <exclude name="**/tmp/*"/>
+            </fileset>
+        </copy>
+        <mkdir dir="${dist}/${artifact}-${version}/sample-scripts"/>
+        <copy todir="${dist}/${artifact}-${version}/sample-scripts" overwrite="true">
+            <fileset dir="${basedir}/src/scripts">
+                <include name="*.sh"/>
+                <include name="*.rb"/>
+                <include name="*.osascript"/>
+            </fileset>
+        </copy>
+        <copy todir="${dist}/${artifact}-${version}" overwrite="true">
+            <fileset dir="${basedir}/src/scripts" includes="build.xml"/>
+            <fileset dir="${basedir}/src/scripts" includes="Rakefile"/>
+            <fileset dir="${basedir}/src/scripts" includes="Capfile"/>
+            <fileset dir="${basedir}/src/configuration" includes="*.yml"/>
+            <fileset dir="${basedir}">
+                <include name="doc/**/*"/>
+                <exclude name="doc/**/iMac.jpeg"/>
+                <exclude name="doc/**/macbookpro.jpg"/>
+                <exclude name="doc/**/DELL Server.jpg"/>
+                <exclude name="doc/**/applelogo.png"/>
+                <include name="README"/>
+            </fileset>
+        </copy>
+        <mkdir dir="${dist}/${artifact}-${version}/log"/>
+    </target>
 
-  <target name="pmd-analysis" description="Uses PMD to perform static analysis of the code">
-    <build-subprojects target="pmd-analysis"/>
-  </target>
+    <target name="dist-bin" depends="build-bin-dist" description="Package binary distribution">
+        <zip destfile="${dist}/selenium-grid-${version}-bin.zip">
+            <fileset dir="${dist}" includes="${artifact}-${version}/**/*"/>
+        </zip>
+    </target>
 
-  <target name="coverage-analysis" description="Uses Cobertura to perform code coverage analysis">
-    <build-subprojects target="coverage-analysis"/>
-  </target>
+    <target name="pmd-analysis" description="Uses PMD to perform static analysis of the code">
+        <build-subprojects target="pmd-analysis"/>
+    </target>
 
-  <target name="metrics" depends="coverage-analysis, pmd-analysis, aggregate-reports"/>
-  
-  <macrodef name="copyreports">
-    <attribute name="project" />
-    <sequential>
-      <mkdir dir="${metrics.reports}/@{project}"/>
-      <copy todir="${metrics.reports}/@{project}" overwrite="true">
-        <fileset dir="${basedir}/@{project}/target/metrics" includes="**/*"/>
-      </copy>
-    </sequential>
-  </macrodef>
+    <target name="coverage-analysis" description="Uses Cobertura to perform code coverage analysis">
+        <build-subprojects target="coverage-analysis"/>
+    </target>
 
-  <target name="aggregate-reports" description="Aggregates subproject reports">
-    <copyreports project="infrastructure/core"/>
-    <copyreports project="infrastructure/webserver"/>
-    <copyreports project="hub"/>
-    <copyreports project="remote-control"/>
-    <copyreports project="agent"/>
-    <copyreports project="tools"/>
-    <copy todir="${metrics.reports}" overwrite="true">
-      <fileset dir="src/reports" includes="**/*"/>
-    </copy>
-  </target>
+    <target name="metrics" depends="coverage-analysis, pmd-analysis, aggregate-reports"/>
 
-  <target name="acceptance-tests" description="Test a new distribution" 
-          depends="automated-demo, automated-java-example, automated-ruby-example">
-  </target>
+    <macrodef name="copyreports">
+        <attribute name="project"/>
+        <sequential>
+            <mkdir dir="${metrics.reports}/@{project}"/>
+            <copy todir="${metrics.reports}/@{project}" overwrite="true">
+                <fileset dir="${basedir}/@{project}/target/metrics" includes="**/*"/>
+            </copy>
+        </sequential>
+    </macrodef>
 
-  <target name="automated-demo" description="Fully Automated Demo (for continuous integration)">
-      <exec executable="${rake}" dir="${dist}/selenium-grid-${version}" failonerror="true">
-          <arg value="--trace"/>
-          <arg value="ci:demo"/>
-      </exec>
-  </target>
+    <target name="aggregate-reports" description="Aggregates subproject reports">
+        <copyreports project="infrastructure/core"/>
+        <copyreports project="infrastructure/webserver"/>
+        <copyreports project="hub"/>
+        <copyreports project="remote-control"/>
+        <copyreports project="agent"/>
+        <copyreports project="tools"/>
+        <copy todir="${metrics.reports}" overwrite="true">
+            <fileset dir="src/reports" includes="**/*"/>
+        </copy>
+    </target>
 
-  <target name="automated-java-example">
-    <exec executable="${rake}" dir="${dist}/selenium-grid-${version}" failonerror="true">
-      <arg value="all:restart"/>
-    </exec>
-    <waitfor maxwait="10" maxwaitunit="second">
-      <socket server="localhost" port="4444"/>
-    </waitfor>
-    <exec executable="ant" dir="${dist}/selenium-grid-${version}/examples/java-testng" failonerror="true">
-      <arg value="run"/>
-    </exec>
-    <exec executable="ant" dir="${dist}/selenium-grid-${version}/examples/java-testng" failonerror="true">
-      <arg value="run-in-sequence"/>
-    </exec>
-    <exec executable="${rake}" dir="${dist}/selenium-grid-${version}" failonerror="true">
-        <arg value="all:stop"/>
-    </exec>
-  </target>
+    <target name="acceptance-tests" description="Test a new distribution"
+            depends="automated-demo, automated-java-example, automated-ruby-example">
+    </target>
+
+    <target name="automated-demo" description="Fully Automated Demo (for continuous integration)">
+        <exec executable="${rake}" dir="${dist}/selenium-grid-${version}" failonerror="true">
+            <arg value="--trace"/>
+            <arg value="ci:demo"/>
+        </exec>
+    </target>
+
+    <target name="automated-java-example">
+        <exec executable="${rake}" dir="${dist}/selenium-grid-${version}" failonerror="true">
+            <arg value="all:restart"/>
+        </exec>
+        <waitfor maxwait="10" maxwaitunit="second">
+            <socket server="localhost" port="4444"/>
+        </waitfor>
+        <exec executable="ant" dir="${dist}/selenium-grid-${version}/examples/java-testng" failonerror="true">
+            <arg value="run"/>
+        </exec>
+        <exec executable="ant" dir="${dist}/selenium-grid-${version}/examples/java-testng" failonerror="true">
+            <arg value="run-in-sequence"/>
+        </exec>
+        <exec executable="${rake}" dir="${dist}/selenium-grid-${version}" failonerror="true">
+            <arg value="all:stop"/>
+        </exec>
+    </target>
 
     <target name="automated-ruby-example" description="Fully Automated Ruby Example (for continuous integration)">
-      <exec executable="${rake}" dir="${dist}/selenium-grid-${version}" failonerror="true">
-          <arg value="--trace"/>
-          <arg value="ci:ruby-example"/>
-      </exec>
+        <exec executable="${rake}" dir="${dist}/selenium-grid-${version}" failonerror="true">
+            <arg value="--trace"/>
+            <arg value="ci:ruby-example"/>
+        </exec>
     </target>
 
 </project>

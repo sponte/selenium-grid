@@ -1,7 +1,7 @@
 package com.thoughtworks.selenium.grid.hub.management;
 
 import com.thoughtworks.selenium.grid.hub.remotecontrol.DynamicRemoteControlPool;
-import com.thoughtworks.selenium.grid.hub.remotecontrol.RemoteControlProxy;
+import com.thoughtworks.selenium.grid.hub.remotecontrol.IRemoteControlProxy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -20,7 +20,7 @@ public class RegistrationServlet extends RegistrationManagementServlet {
 
     protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        final RemoteControlProxy newRemoteControl;
+        final IRemoteControlProxy newRemoteControl;
         final DynamicRemoteControlPool pool;
 
         LOGGER.info("Registering new remote control...");

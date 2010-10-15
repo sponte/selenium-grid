@@ -1,5 +1,7 @@
 hub:
    port: 4444
+   remoteControlPollingIntervalInSeconds: 10
+   sessionMaxIdleTimeInSeconds: 300
    environments:
        - name:    "*firefox"
          browser: "*firefox"
@@ -9,3 +11,9 @@ hub:
          browser: "*iehta"
        - name:    "*safari"
          browser: "*safari"
+       - name:    "internet explorer on windows"
+         browser: "InternetExplorer"
+       - name:    "firefox on windows"
+         browser: "Firefox"
+       - name:    "htmlunit on any"
+         browser: "HtmlUnit"

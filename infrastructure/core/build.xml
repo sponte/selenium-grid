@@ -1,27 +1,28 @@
 <project name="Selenium Grid Core" default="package" basedir=".">
 
-  <description>Selenium Grid Core</description>
+    <description>Selenium Grid Core</description>
 
-  <property name="rootdir" value="${basedir}/../.."/>
-  <property file="${rootdir}/project.properties"/>
-  <property name="name" value="Selenium Grid Core"/>
-  <property name="artifact" value="selenium-grid-core"/>
-  <property name="version" value="SNAPSHOT"/>
+    <property name="rootdir" value="${basedir}/../.."/>
+    <property file="${rootdir}/project.properties"/>
+    <property name="name" value="Selenium Grid Core"/>
+    <property name="artifact" value="selenium-grid-core"/>
+    <property name="version" value="SNAPSHOT"/>
 
-  <property name="build.src" location="src/main"/>
+    <property name="build.src" location="src/main"/>
 
-  <import file="${rootdir}/lib/build/common-build.xml" />
+    <import file="${rootdir}/lib/build/common-build.xml"/>
 
-  <path id="compile.classpath">
-    <fileset dir="${rootdir}/vendor">
-      <include name="jyaml-1.3.jar"/>
-      <include name="commons-httpclient-3.1.jar"/>
-      <include name="commons-codec-1.4.jar"/>
-      <include name="commons-logging-1.1.1.jar"/>
-    </fileset>
-    <pathelement path="${java.class.path}/"/>
-  </path>
+    <path id="compile.classpath">
+        <fileset dir="${rootdir}/vendor">
+            <include name="jyaml-1.3.jar"/>
+            <include name="commons-httpclient-3.1.jar"/>
+            <include name="commons-codec-1.4.jar"/>
+            <include name="commons-logging-1.1.1.jar"/>
+            <include name="servlet-api-2.5-20081211.jar"/>
+        </fileset>
+        <pathelement path="${java.class.path}/"/>
+    </path>
 
-  <target name="dist" depends="package"/>
+    <target name="dist" depends="package"/>
 
 </project>

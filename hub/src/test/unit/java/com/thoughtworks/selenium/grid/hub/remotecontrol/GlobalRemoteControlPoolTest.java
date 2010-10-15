@@ -1,23 +1,20 @@
 package com.thoughtworks.selenium.grid.hub.remotecontrol;
 
 import com.thoughtworks.selenium.grid.HttpClient;
+import com.thoughtworks.selenium.grid.MockHelper;
 import com.thoughtworks.selenium.grid.hub.Environment;
 import com.thoughtworks.selenium.grid.hub.EnvironmentManager;
 import com.thoughtworks.selenium.grid.hub.NoSuchEnvironmentException;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertSame;
-import static junit.framework.Assert.assertTrue;
-
 import com.thoughtworks.selenium.grid.hub.NoSuchSessionException;
 import org.jbehave.classmock.UsingClassMock;
 import org.jbehave.core.mock.Mock;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 import java.util.Date;
 import java.util.List;
+
+import static junit.framework.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 
 public class GlobalRemoteControlPoolTest extends UsingClassMock {
@@ -98,7 +95,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
         try {
             pool.retrieve("a session id");
             fail("did not catch NoSuchSessionException as expected");
-        } catch(NoSuchSessionException e) {
+        } catch (NoSuchSessionException e) {
             assertEquals("a session id", e.sessionId());
         }
 
@@ -139,8 +136,8 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
         try {
             pool.reserve(new Environment("an environment", ""));
             fail("did not catch NoSuchEnvironmentException as expected");
-        } catch(NoSuchEnvironmentException e) {
-            assertEquals("an environment", e.environment());  
+        } catch (NoSuchEnvironmentException e) {
+            assertEquals("an environment", e.environment());
         }
     }
 
@@ -149,7 +146,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
         try {
             new GlobalRemoteControlPool().retrieve("unknown session id");
             fail("did not catch NoSuchSessionException as expected");
-        } catch(NoSuchSessionException e) {
+        } catch (NoSuchSessionException e) {
             assertEquals("unknown session id", e.sessionId());
         }
     }
@@ -187,9 +184,10 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
     @Test
     public void afterReleaseForSessionARemoteControlIsNotAssociatedWithASessionAnymore() {
         final RemoteControlProxy remoteControl;
-        final GlobalRemoteControlPool pool;                                                
+        final GlobalRemoteControlPool pool;
 
         remoteControl = new HealthyRemoteControl("", 0, "an environment", new HttpClient());
+        remoteControl.setRequest(MockHelper.GetMockHttpServletRequest());
         pool = new GlobalRemoteControlPool();
         pool.register(remoteControl);
         pool.reserve(new Environment("an environment", ""));
@@ -200,7 +198,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
         try {
             pool.retrieve("a session id");
             fail("did not catch NoSuchSessionException as expected");
-        } catch(NoSuchSessionException e) {
+        } catch (NoSuchSessionException e) {
             assertEquals("a session id", e.sessionId());
         }
     }
@@ -217,6 +215,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
         final GlobalRemoteControlPool pool;
 
         remoteControl = new RemoteControlProxy("", 0, "an environment", new HttpClient());
+        remoteControl.setRequest(MockHelper.GetMockHttpServletRequest());
         provisioner = mock(RemoteControlProvisioner.class);
         pool = new GlobalRemoteControlPool() {
             public RemoteControlProvisioner getProvisioner(String environment) {
@@ -233,7 +232,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
         try {
             pool.retrieve("a session id");
             fail("did not catch NoSuchSessionException as expected");
-        } catch(NoSuchSessionException e) {
+        } catch (NoSuchSessionException e) {
             assertEquals("a session id", e.sessionId());
         }
 
@@ -262,7 +261,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
         try {
             pool.retrieve("a session id");
             fail("did not catch NoSuchSessionException as expected");
-        } catch(NoSuchSessionException e) {
+        } catch (NoSuchSessionException e) {
             assertEquals("a session id", e.sessionId());
         }
 
@@ -303,7 +302,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
         try {
             new GlobalRemoteControlPool().getRemoteControlForSession("a session id");
             fail("did not catch NoSuchSessionException as expected");
-        } catch(NoSuchSessionException e) {
+        } catch (NoSuchSessionException e) {
             assertEquals("a session id", e.sessionId());
         }
     }
@@ -314,6 +313,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
         final GlobalRemoteControlPool pool;
 
         remoteControl = new HealthyRemoteControl("host", 0, "an environment", new HttpClient());
+        remoteControl.setRequest(MockHelper.GetMockHttpServletRequest());
         pool = new GlobalRemoteControlPool();
 
         pool.register(remoteControl);
@@ -324,7 +324,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
         try {
             pool.getRemoteControlForSession("a session id");
             fail("did not catch NoSuchSessionException as expected");
-        } catch(NoSuchSessionException e) {
+        } catch (NoSuchSessionException e) {
             assertEquals("a session id", e.sessionId());
         }
     }
@@ -365,14 +365,14 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
     public void availableRemoteControlsReturnAvailableRemoteControlsForAllEnvironments() {
         final HealthyRemoteControl anotherRCForTheSecondEnvironment;
         final HealthyRemoteControl aRCForAnotherEnvironment;
-        final List<RemoteControlProxy> availableRemoteControls;
+        final List<IRemoteControlProxy> availableRemoteControls;
         final EnvironmentManager environmentManager;
         final Environment firstEnvironment;
         final Environment secondEnvironment;
         final GlobalRemoteControlPool pool;
         final HealthyRemoteControl aRC;
 
-        
+
         environmentManager = new EnvironmentManager();
         firstEnvironment = new Environment("first environment", "*chrome");
         secondEnvironment = new Environment("second environment", "*chrome");
@@ -396,7 +396,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
 
     @Test
     public void availableRemoteControlsDoNotReturnReservedRemoteControls() {
-        final List<RemoteControlProxy> availableRemoteControls;
+        final List<IRemoteControlProxy> availableRemoteControls;
         final EnvironmentManager environmentManager;
         final Environment anEnvironment;
         final GlobalRemoteControlPool pool;
@@ -455,7 +455,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
     public void reservedRemoteControlsReturnsReservedRemoteControlsForAllEnvironemnt() {
         final HealthyRemoteControl anotherRCForTheSecondEnvironment;
         final HealthyRemoteControl aRCForAnotherEnvironment;
-        final List<RemoteControlProxy> reservedRemoteControls;
+        final List<IRemoteControlProxy> reservedRemoteControls;
         final EnvironmentManager environmentManager;
         final Environment firstEnvironment;
         final Environment secondEnvironment;
@@ -491,7 +491,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
 
     @Test
     public void reservedRemoteControlsDoNotReturnAvailableRemoteControls() {
-        final List<RemoteControlProxy> reservedRemoteControls;
+        final List<IRemoteControlProxy> reservedRemoteControls;
         final EnvironmentManager environmentManager;
         final Environment anEnvironment;
         final GlobalRemoteControlPool pool;
@@ -549,7 +549,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
     public void allRegisteredRemoteControlsReturnAllAvailableRemoteControlsForAllEnvironmentsWhenNoneAreReserved() {
         final HealthyRemoteControl anotherRCForTheSecondEnvironment;
         final HealthyRemoteControl aRCForAnotherEnvironment;
-        final List<RemoteControlProxy> allRegisteredRemoteControls;
+        final List<IRemoteControlProxy> allRegisteredRemoteControls;
         final EnvironmentManager environmentManager;
         final Environment firstEnvironment;
         final Environment secondEnvironment;
@@ -580,7 +580,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
 
     @Test
     public void allRegisteredRemoteControlsReturnsAvailableAndReservedRemoteControls() {
-        final List<RemoteControlProxy> allRegisteredRemoteControls;
+        final List<IRemoteControlProxy> allRegisteredRemoteControls;
         final EnvironmentManager environmentManager;
         final Environment anEnvironment;
         final GlobalRemoteControlPool pool;
@@ -607,7 +607,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
 
     @Test
     public void allRegisteredRemoteControlsReturnsAllReservedRemoteControls() {
-        final List<RemoteControlProxy> allRegisteredRemoteControls;
+        final List<IRemoteControlProxy> allRegisteredRemoteControls;
         final EnvironmentManager environmentManager;
         final Environment anEnvironment;
         final GlobalRemoteControlPool pool;
@@ -694,6 +694,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
         final Mock httpClient = mock(HttpClient.class);
         httpClient.stubs("post");
         aRC = new HealthyRemoteControl("host", 4444, "an environment", (HttpClient) httpClient);
+        aRC.setRequest(MockHelper.GetMockHttpServletRequest());
 
         pool = new GlobalRemoteControlPool();
         pool.register(aRC);
@@ -707,7 +708,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
         try {
             pool.getRemoteControlForSession("a session id");
             fail("did not catch NoSuchSessionException as expected");
-        } catch(NoSuchSessionException e) {
+        } catch (NoSuchSessionException e) {
             assertEquals("a session id", e.sessionId());
         }
     }
@@ -738,6 +739,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
         final Mock httpClient = mock(HttpClient.class);
         httpClient.stubs("post");
         aRC = new HealthyRemoteControl("host", 4444, "an environment", (HttpClient) httpClient);
+        aRC.setRequest(MockHelper.GetMockHttpServletRequest());
 
         pool = new GlobalRemoteControlPool();
         pool.register(aRC);
@@ -752,7 +754,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
         try {
             pool.getRemoteControlForSession("a session id");
             fail("did not catch NoSuchSessionException as expected");
-        } catch(NoSuchSessionException e) {
+        } catch (NoSuchSessionException e) {
             assertEquals("a session id", e.sessionId());
         }
     }
@@ -779,6 +781,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
         final Mock httpClient = mock(HttpClient.class);
         httpClient.stubs("post");
         rc = new HealthyRemoteControl("host", 4444, "an environment", (HttpClient) httpClient);
+        rc.setRequest(MockHelper.GetMockHttpServletRequest());
 
         pool = new GlobalRemoteControlPool();
         pool.register(rc);
@@ -791,7 +794,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
         try {
             pool.getRemoteControlForSession("a session id");
             fail("did not catch NoSuchSessionException as expected");
-        } catch(NoSuchSessionException e) {
+        } catch (NoSuchSessionException e) {
             assertEquals("a session id", e.sessionId());
         }
     }
@@ -860,7 +863,7 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
         final GlobalRemoteControlPool pool;
 
         pool = new GlobalRemoteControlPool();
-        assertFalse(pool.isRegistered( new RemoteControlProxy("", 0, "an environment", null)));
+        assertFalse(pool.isRegistered(new RemoteControlProxy("", 0, "an environment", null)));
     }
 
     @Test
@@ -878,5 +881,5 @@ public class GlobalRemoteControlPoolTest extends UsingClassMock {
         assertTrue(pool.isRegistered(aRemoteControl));
         assertTrue(pool.isRegistered(anotherRemoteControl));
     }
-    
+
 }

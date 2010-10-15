@@ -1,101 +1,153 @@
 <project name="Selenium Grid Remote Control" default="package-standalone" basedir=".">
 
-  <description>Selenium Grid Remote Control</description>
+    <description>Selenium Grid Remote Control</description>
 
-  <property name="rootdir" value="${basedir}/.."/>
-  <property file="${rootdir}/project.properties"/>
-  <property name="name" value="Selenium Grid Remote Control"/>
-  <property name="artifact" value="selenium-grid-remote-control"/>
-  <property name="version" value="SNAPSHOT"/>
-  <property name="selenium.version" value="Set Me"/>
+    <property name="rootdir" value="${basedir}/.."/>
+    <property file="${rootdir}/project.properties"/>
+    <property name="name" value="Selenium Grid Remote Control"/>
+    <property name="artifact" value="selenium-grid-remote-control"/>
+    <property name="version" value="SNAPSHOT"/>
+    <property name="selenium.version" value="Set Me"/>
 
-  
-  <import file="${rootdir}/lib/build/common-build.xml" />
 
-  <path id="compile.classpath">
-    <fileset dir="${rootdir}/vendor">
-      <include name="selenium-server-${selenium.version}-standalone.jar"/>
-    </fileset>
-    <fileset dir="${rootdir}/vendor">
-      <include name="commons-httpclient-3.1.jar"/>
-      <include name="commons-codec-1.4.jar"/>
-      <include name="commons-logging-1.1.1.jar"/>
-    </fileset>
-    <pathelement location="${rootdir}/infrastructure/core/target/classes"/>    
-    <pathelement path="${java.class.path}/"/>
-  </path>
+    <import file="${rootdir}/lib/build/common-build.xml"/>
 
-  <path id="runtime.classpath">
-    <fileset dir="${rootdir}/vendor">
-      <include name="selenium-server-*.jar"/>
-    </fileset>
-    <!-- Selenium Server must be first in classpath -->
-    <fileset dir="${dist}/lib">
-      <include name="selenium-grid-remote-control-standalone-${version}.jar"/>
-    </fileset>
-    <pathelement path="${java.class.path}/"/>
-  </path>
-  
-  <target name="package-standalone" depends="package" description="Package as a jar including all dependencies">
-    <package-standalone-jar main-class="com.thoughtworks.selenium.grid.remotecontrol.SelfRegisteringRemoteControlLauncher">
-      <dependencies>
-        <zipfileset src="${rootdir}/infrastructure/core/target/dist/lib/selenium-grid-core-${version}.jar"/>          
-        <zipfileset src="${rootdir}/vendor/jetty-6.1.24.jar"/>
-        <zipfileset src="${rootdir}/vendor/jetty-util-6.1.24.jar"/>
-        <zipfileset src="${rootdir}/vendor/servlet-api-2.5-20081211.jar"/>
-        <zipfileset src="${rootdir}/vendor/commons-httpclient-3.1.jar"/>
-        <zipfileset src="${rootdir}/vendor/commons-codec-1.4.jar"/>
-        <zipfileset src="${rootdir}/vendor/commons-logging-1.1.1.jar"/>
-      </dependencies>
-    </package-standalone-jar>
-  </target>
+    <path id="compile.classpath">
+        <fileset dir="${rootdir}/vendor">
+            <include name="selenium-server-standalone-${selenium.version}.jar"/>
+        </fileset>
+        <fileset dir="${rootdir}/vendor">
+            <include name="commons-httpclient-3.1.jar"/>
+            <include name="commons-codec-1.4.jar"/>
+            <include name="commons-logging-1.1.1.jar"/>
+        </fileset>
+        <pathelement location="${rootdir}/infrastructure/core/target/classes"/>
+        <pathelement path="${java.class.path}/"/>
+    </path>
 
-  <property name="host" value="localhost"/>
-  <property name="port" value="5555"/>
-  <property name="hubURL" value="http://localhost:4444"/>
-  <property name="environment" value="*firefox"/>
-  <property name="hubPollerIntervalInSeconds" value="30"/>
-  <property name="seleniumArgs" value=""/>
-  <target name="run" description="Launch a remote control">
-    <java classpathref="runtime.classpath"
-          classname="com.thoughtworks.selenium.grid.remotecontrol.SelfRegisteringRemoteControlLauncher"
-          fork="true"
-          failonerror="true">
+    <path id="runtime.classpath">
+        <fileset dir="${rootdir}/vendor">
+            <include name="selenium-server-standalone-*.jar"/>
+        </fileset>
+        <!-- Selenium Server must be first in classpath -->
+        <fileset dir="${dist}/lib">
+            <include name="selenium-grid-remote-control-standalone-${version}.jar"/>
+        </fileset>
+        <pathelement path="${java.class.path}/"/>
+    </path>
 
-      <sysproperty key="http.proxyHost" value="${http.proxyHost}"/>
-      <sysproperty key="http.proxyPort" value="${http.proxyPort}"/>
-      <sysproperty key="https.proxyHost" value="${https.proxyHost}"/>
-      <sysproperty key="https.proxyPort" value="${https.proxyPort}"/>
+    <target name="package-standalone" depends="package" description="Package as a jar including all dependencies">
+        <package-standalone-jar
+                main-class="com.thoughtworks.selenium.grid.remotecontrol.SelfRegisteringRemoteControlLauncher">
+            <dependencies>
+                <zipfileset src="${rootdir}/infrastructure/core/target/dist/lib/selenium-grid-core-${version}.jar"/>
+                <zipfileset src="${rootdir}/vendor/jetty-6.1.24.jar"/>
+                <zipfileset src="${rootdir}/vendor/jetty-util-6.1.24.jar"/>
+                <zipfileset src="${rootdir}/vendor/servlet-api-2.5-20081211.jar"/>
+                <zipfileset src="${rootdir}/vendor/commons-httpclient-3.1.jar"/>
+                <zipfileset src="${rootdir}/vendor/commons-codec-1.4.jar"/>
+                <zipfileset src="${rootdir}/vendor/commons-logging-1.1.1.jar"/>
+            </dependencies>
+        </package-standalone-jar>
+    </target>
 
-      <arg value="-port"/>
-      <arg value="${port}"/>
-      <arg value="-host"/>
-      <arg value="${host}"/>
-      <arg value="-hubURL"/>
-      <arg value="${hubURL}"/>
-      <arg value="-env"/>
-      <arg value="${environment}"/>
-      <arg value="-hubPollerIntervalInSeconds"/>
-      <arg value="${hubPollerIntervalInSeconds}"/>
-      <arg line="${seleniumArgs}"/>
-    </java>
-  </target>
+    <property name="host" value="localhost"/>
+    <property name="port" value="5555"/>
+    <property name="hubURL" value="http://localhost:4444"/>
+    <property name="environment" value="*firefox"/>
+    <property name="hubPollerIntervalInSeconds" value="30"/>
+    <property name="seleniumArgs" value=""/>
+    <target name="run" description="Launch a remote control">
+        <java classpathref="runtime.classpath"
+              classname="com.thoughtworks.selenium.grid.remotecontrol.SelfRegisteringRemoteControlLauncher"
+              fork="true"
+              failonerror="true">
 
-  <target name="run-echo" description="Launch a echo remote control">
-    <java classpathref="runtime.classpath"
-          classname="com.thoughtworks.selenium.grid.remotecontrol.instrumentation.EchoRemoteControl"
-          fork="true"
-          failonerror="true">
-      <arg value="-port"/>
-      <arg value="${port}"/>
-      <arg value="-host"/>
-      <arg value="${host}"/>
-      <arg value="-hubURL"/>
-      <arg value="${hubURL}"/>
-      <arg value="-env"/>
-      <arg value="${environment}"/>
-      <arg line="${seleniumArgs}"/>
-    </java>
-  </target>
+            <sysproperty key="http.proxyHost" value="${http.proxyHost}"/>
+            <sysproperty key="http.proxyPort" value="${http.proxyPort}"/>
+            <sysproperty key="https.proxyHost" value="${https.proxyHost}"/>
+            <sysproperty key="https.proxyPort" value="${https.proxyPort}"/>
+
+            <arg value="-port"/>
+            <arg value="${port}"/>
+            <arg value="-host"/>
+            <arg value="${host}"/>
+            <arg value="-hubURL"/>
+            <arg value="${hubURL}"/>
+            <arg value="-env"/>
+            <arg value="${environment}"/>
+            <arg value="-hubPollerIntervalInSeconds"/>
+            <arg value="${hubPollerIntervalInSeconds}"/>
+            <arg line="${seleniumArgs}"/>
+        </java>
+    </target>
+
+    <target name="run-webdriver" description="Launch a remote control using webdriver environment">
+        <java classpathref="runtime.classpath"
+              classname="com.thoughtworks.selenium.grid.remotecontrol.SelfRegisteringRemoteControlLauncher"
+              fork="true"
+              failonerror="true">
+
+            <sysproperty key="http.proxyHost" value="${http.proxyHost}"/>
+            <sysproperty key="http.proxyPort" value="${http.proxyPort}"/>
+            <sysproperty key="https.proxyHost" value="${https.proxyHost}"/>
+            <sysproperty key="https.proxyPort" value="${https.proxyPort}"/>
+            <jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,address=5007,suspend=n"/>
+            <arg value="-port"/>
+            <arg value="7777"/>
+            <arg value="-host"/>
+            <arg value="${host}"/>
+            <arg value="-hubURL"/>
+            <arg value="${hubURL}"/>
+            <arg value="-env"/>
+            <arg value="internet explorer on windows"/>
+            <arg value="-hubPollerIntervalInSeconds"/>
+            <arg value="${hubPollerIntervalInSeconds}"/>
+            <arg line="${seleniumArgs}"/>
+        </java>
+    </target>
+
+
+    <target name="run-webdriver-htmlunit" description="Launch a remote control using webdriver environment">
+        <java classpathref="runtime.classpath"
+              classname="com.thoughtworks.selenium.grid.remotecontrol.SelfRegisteringRemoteControlLauncher"
+              fork="true"
+              failonerror="true">
+
+            <sysproperty key="http.proxyHost" value="${http.proxyHost}"/>
+            <sysproperty key="http.proxyPort" value="${http.proxyPort}"/>
+            <sysproperty key="https.proxyHost" value="${https.proxyHost}"/>
+            <sysproperty key="https.proxyPort" value="${https.proxyPort}"/>
+            <jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,address=5007,suspend=n"/>
+            <arg value="-port"/>
+            <arg value="7777"/>
+            <arg value="-host"/>
+            <arg value="${host}"/>
+            <arg value="-hubURL"/>
+            <arg value="${hubURL}"/>
+            <arg value="-env"/>
+            <arg value="htmlunit on any"/>
+            <arg value="-hubPollerIntervalInSeconds"/>
+            <arg value="${hubPollerIntervalInSeconds}"/>
+            <arg line="${seleniumArgs}"/>
+        </java>
+    </target>
+
+    <target name="run-echo" description="Launch a echo remote control">
+        <java classpathref="runtime.classpath"
+              classname="com.thoughtworks.selenium.grid.remotecontrol.instrumentation.EchoRemoteControl"
+              fork="true"
+              failonerror="true">
+            <arg value="-port"/>
+            <arg value="${port}"/>
+            <arg value="-host"/>
+            <arg value="${host}"/>
+            <arg value="-hubURL"/>
+            <arg value="${hubURL}"/>
+            <arg value="-env"/>
+            <arg value="${environment}"/>
+            <arg line="${seleniumArgs}"/>
+        </java>
+    </target>
 
 </project>

@@ -3,7 +3,7 @@ package com.thoughtworks.selenium.grid.hub;
 import com.thoughtworks.selenium.grid.HttpParameters;
 import com.thoughtworks.selenium.grid.Response;
 import com.thoughtworks.selenium.grid.hub.remotecontrol.DynamicRemoteControlPool;
-import com.thoughtworks.selenium.grid.hub.remotecontrol.commands.SeleneseCommand;
+import com.thoughtworks.selenium.grid.hub.remotecontrol.commands.IDriverCommand;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -37,25 +37,24 @@ public class HubServlet extends HttpServlet {
         final HttpParameters parameters;
 
         registry = HubRegistry.registry();
-        parameters = requestParameters(request);
-        remoteControlResponse = forward(parameters, registry.remoteControlPool(), registry.environmentManager());
+        remoteControlResponse = forward(request, registry.remoteControlPool(), registry.environmentManager());
         reply(response, remoteControlResponse);
     }
 
-    protected Response forward(HttpParameters parameters, DynamicRemoteControlPool pool, EnvironmentManager environmentManager) throws IOException {
-        final SeleneseCommand command;
+    protected Response forward(HttpServletRequest request, DynamicRemoteControlPool pool, EnvironmentManager environmentManager) throws IOException {
+        final IDriverCommand command;
         final Response response;
 
-        LOGGER.info("Processing '" + parameters.toString() + "'");
+        LOGGER.info("Processing '" + request.toString() + "'");
         try {
-            command = new HttpCommandParser(parameters).parse(environmentManager);
+            command = new HttpCommandParser(request).parse(environmentManager);
             response = command.execute(pool);
         } catch (CommandParsingException e) {
-            LOGGER.error("Failed to parse '" + parameters.toString() + "' : " + e.getMessage());
+            LOGGER.error("Failed to parse '" + request.toString() + "' : " + e.getMessage());
             return new Response(e.getMessage());
         } catch (NoSuchEnvironmentException e) {
             LOGGER.error("Could not find any remote control providing the '" + e.environment() +
-                         "' environment. Please make sure you started some remote controls which registered as offering this environment.");
+                    "' environment. Please make sure you started some remote controls which registered as offering this environment.");
             return new Response(e.getMessage());
         } catch (NoSuchSessionException e) {
             LOGGER.error(e.getMessage());
@@ -66,8 +65,7 @@ public class HubServlet extends HttpServlet {
         if (responseBody.length() > 128) {
             final int truncated = responseBody.length() - 128;
             LOGGER.info(String.format("Responding with %d / %s...[%d characters truncated]", response.statusCode(), responseBody.substring(0, 128), truncated));
-        }
-        else {
+        } else {
             LOGGER.info(String.format("Responding with %d / %s", response.statusCode(), responseBody));
         }
 

@@ -1,7 +1,7 @@
 package com.thoughtworks.selenium.grid.hub.management;
 
 import com.thoughtworks.selenium.grid.hub.remotecontrol.DynamicRemoteControlPool;
-import com.thoughtworks.selenium.grid.hub.remotecontrol.RemoteControlProxy;
+import com.thoughtworks.selenium.grid.hub.remotecontrol.IRemoteControlProxy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -17,7 +17,7 @@ public class UnregistrationServlet extends RegistrationManagementServlet {
     private static final Log logger = LogFactory.getLog(UnregistrationServlet.class);
 
     protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        final RemoteControlProxy newRemoteControl;
+        final IRemoteControlProxy newRemoteControl;
         final DynamicRemoteControlPool pool;
 
         logger.info("Unregistering remote control...");

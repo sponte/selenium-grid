@@ -8,17 +8,17 @@ import java.util.List;
  */
 public interface DynamicRemoteControlPool extends RemoteControlPool {
 
-    void register(RemoteControlProxy newRemoteControl);
+    void register(IRemoteControlProxy newRemoteControl);
 
-    boolean unregister(RemoteControlProxy remoteControl);
+    boolean unregister(IRemoteControlProxy remoteControl);
 
-    boolean isRegistered(RemoteControlProxy remoteControl);
+    boolean isRegistered(IRemoteControlProxy remoteControl);
 
-    List<RemoteControlProxy> allRegisteredRemoteControls();
+    List<IRemoteControlProxy> allRegisteredRemoteControls();
 
-    List<RemoteControlProxy> availableRemoteControls();
+    List<IRemoteControlProxy> availableRemoteControls();
 
-    List<RemoteControlProxy> reservedRemoteControls();
+    List<IRemoteControlProxy> reservedRemoteControls();
 
     void unregisterAllUnresponsiveRemoteControls();
 

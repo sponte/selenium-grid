@@ -1,19 +1,20 @@
 package com.thoughtworks.selenium.grid.hub.management;
 
-import com.thoughtworks.selenium.grid.hub.remotecontrol.RemoteControlProxy;
-import static junit.framework.Assert.assertEquals;
+import com.thoughtworks.selenium.grid.hub.remotecontrol.IRemoteControlProxy;
 import org.jbehave.classmock.UsingClassMock;
 import org.jbehave.core.mock.Mock;
 import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static junit.framework.Assert.assertEquals;
+
 public class RemoteControlParserTest extends UsingClassMock {
 
     @Test
     public void parseReturnsARemoteControlWhoseHostMatchHttpParameter() {
         final Mock httpRequest;
-        final RemoteControlProxy remoteControl;
+        final IRemoteControlProxy remoteControl;
 
         httpRequest = mock(HttpServletRequest.class);
         httpRequest.expects("getParameter").with("host").will(returnValue("some.host.com"));
@@ -27,7 +28,7 @@ public class RemoteControlParserTest extends UsingClassMock {
     @Test
     public void parseReturnsARemoteControlWhosePortMatchHttpParameter() {
         final Mock httpRequest;
-        final RemoteControlProxy remoteControl;
+        final IRemoteControlProxy remoteControl;
 
         httpRequest = mock(HttpServletRequest.class);
         httpRequest.expects("getParameter").with("port").will(returnValue("1234"));
@@ -41,7 +42,7 @@ public class RemoteControlParserTest extends UsingClassMock {
     @Test
     public void parseReturnsARemoteControlWhoseEnvironmentMatchHttpParameter() {
         final Mock httpRequest;
-        final RemoteControlProxy remoteControl;
+        final IRemoteControlProxy remoteControl;
 
         httpRequest = mock(HttpServletRequest.class);
         httpRequest.expects("getParameter").with("environment").will(returnValue("an environment"));

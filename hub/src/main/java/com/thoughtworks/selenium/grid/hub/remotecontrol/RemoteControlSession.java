@@ -6,11 +6,11 @@ import java.util.Date;
  * Selenium Session in progress
  */
 public class RemoteControlSession {
-    private final RemoteControlProxy remoteControl;
+    private final IRemoteControlProxy remoteControl;
     private long lastActiveAt;
     private final String sessionId;
 
-    public RemoteControlSession(String sessionId, RemoteControlProxy remoteControl) {
+    public RemoteControlSession(String sessionId, IRemoteControlProxy remoteControl) {
         this.sessionId = sessionId;
         this.remoteControl = remoteControl;
         updateLastActiveAt();
@@ -20,7 +20,7 @@ public class RemoteControlSession {
         return sessionId;
     }
 
-    public RemoteControlProxy remoteControl() {
+    public IRemoteControlProxy remoteControl() {
         return remoteControl;
     }
 

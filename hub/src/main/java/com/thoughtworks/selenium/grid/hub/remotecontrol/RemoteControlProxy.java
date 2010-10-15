@@ -4,9 +4,11 @@ import com.thoughtworks.selenium.grid.HttpClient;
 import com.thoughtworks.selenium.grid.HttpParameters;
 import com.thoughtworks.selenium.grid.Response;
 import com.thoughtworks.selenium.grid.hub.HubServer;
+import com.thoughtworks.selenium.grid.hub.remotecontrol.commands.RemoteControlMode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +16,7 @@ import java.util.Map;
 /**
  * Local interface to a real remote control running somewhere in the grid.
  */
-public class RemoteControlProxy {
+public class RemoteControlProxy implements IRemoteControlProxy {
 
     private static final Log LOGGER = LogFactory.getLog(HubServer.class);
 
@@ -27,6 +29,8 @@ public class RemoteControlProxy {
     private final int port;
     private int failedHeartbeatCount;
 
+    private RemoteControlMode mode;
+    private HttpServletRequest request;
 
     public RemoteControlProxy(String host, int port, String environment, HttpClient httpClient) {
         if (null == host) {
@@ -67,8 +71,33 @@ public class RemoteControlProxy {
         return "http://" + host + ":" + port + "/selenium-server/" + path;
     }
 
-    public Response forward(HttpParameters parameters) throws IOException {
-        return httpClient.post(remoteControlDriverURL(), parameters);
+    public String remoteWebDriverControlDriverURL(String requestPath) {
+        return "http://" + host + ":" + port + requestPath;
+    }
+
+    public Response forward(HttpServletRequest request) throws IOException {
+        if (IsWebDriverRequest(request)) {
+            String requestMethod = request.getMethod();
+            if (requestMethod.equals("POST")) {
+                return httpClient.postWebDriverRequest(remoteWebDriverControlDriverURL(request.getRequestURI()), request);
+            } else if (requestMethod.equals("DELETE")) {
+                return httpClient.deleteWebDriverRequest(remoteWebDriverControlDriverURL(request.getRequestURI()), request);
+            } else if (requestMethod.equals("PUT")) {
+                return httpClient.putWebDriverRequest(remoteWebDriverControlDriverURL(request.getRequestURI()), request);
+            } else {
+                return httpClient.getWebDriverRequest(remoteWebDriverControlDriverURL(request.getRequestURI()), request);
+            }
+        } else {
+            return httpClient.post(remoteControlDriverURL(), new HttpParameters(request.getParameterMap()));
+        }
+    }
+
+    private boolean IsWebDriverRequest(HttpServletRequest request) {
+        String requestUri = (String) request.getRequestURI();
+        if (requestUri != null && requestUri.startsWith("/wd/hub")) {
+            return true;
+        }
+        return false;
     }
 
     public String toString() {
@@ -115,10 +144,10 @@ public class RemoteControlProxy {
     public void terminateSession(String sessionId) {
         try {
             Map<String, String[]> params = new HashMap<String, String[]>();
-            params.put("cmd", new String[] { "testComplete" });
-            params.put("sessionId", new String[] { sessionId });
+            params.put("cmd", new String[]{"testComplete"});
+            params.put("sessionId", new String[]{sessionId});
 
-            forward(new HttpParameters(params));
+            forward(this.request);
         }
         catch (IOException e) {
             LOGGER.warn("Exception telling remote control to kill its session:" + e.getMessage());
@@ -126,10 +155,10 @@ public class RemoteControlProxy {
     }
 
     public boolean canHandleNewSession() {
-        return  !sessionInProgress();
+        return !sessionInProgress();
     }
 
-	public boolean unreliable() {
+    public boolean unreliable() {
         final Response response;
 
         try {
@@ -143,8 +172,7 @@ public class RemoteControlProxy {
 
                 failedHeartbeatCount++;
                 return unreliable();
-            }
-            else {
+            } else {
                 failedHeartbeatCount = 0;
                 return true;
             }
@@ -158,8 +186,7 @@ public class RemoteControlProxy {
 
                 failedHeartbeatCount++;
                 return unreliable();
-            }
-            else {
+            } else {
                 failedHeartbeatCount = 0;
                 return true;
             }
@@ -167,6 +194,14 @@ public class RemoteControlProxy {
 
         failedHeartbeatCount = 0;
         return false;
+    }
+
+    public void setRequest(HttpServletRequest request) {
+        this.request = request;
+    }
+
+    public void setMode(RemoteControlMode controlMode) {
+        this.mode = controlMode;
     }
 
 }

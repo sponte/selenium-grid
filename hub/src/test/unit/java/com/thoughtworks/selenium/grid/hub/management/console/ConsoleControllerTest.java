@@ -6,8 +6,6 @@ import com.thoughtworks.selenium.grid.hub.HubRegistry;
 import com.thoughtworks.selenium.grid.hub.management.console.mvc.Page;
 import com.thoughtworks.selenium.grid.hub.remotecontrol.DynamicRemoteControlPool;
 import com.thoughtworks.selenium.grid.hub.remotecontrol.RemoteControlProxy;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertSame;
 import org.jbehave.classmock.UsingClassMock;
 import org.jbehave.core.mock.Mock;
 import org.junit.Test;
@@ -17,6 +15,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertSame;
 
 public class ConsoleControllerTest extends UsingClassMock {
 
@@ -134,7 +135,7 @@ public class ConsoleControllerTest extends UsingClassMock {
         response.stubs("getWriter").will(returnValue(mock(PrintWriter.class)));
         remoteControls = new RemoteControlProxy[]{new RemoteControlProxy("a host", 0, "an environment", null)};
         page = new Page("index.html");
-        page.set("environments", new Environment[] { new Environment("a environment", "a browser")});
+        page.set("environments", new Environment[]{new Environment("a environment", "a browser")});
         page.set("availableRemoteControls", remoteControls);
         page.set("reservedRemoteControls", remoteControls);
 

@@ -3,7 +3,6 @@ package com.thoughtworks.selenium.grid.hub.management;
 import com.thoughtworks.selenium.grid.hub.HubRegistry;
 import com.thoughtworks.selenium.grid.hub.remotecontrol.DynamicRemoteControlPool;
 import com.thoughtworks.selenium.grid.hub.remotecontrol.RemoteControlProxy;
-import static junit.framework.Assert.assertSame;
 import org.jbehave.classmock.UsingClassMock;
 import org.jbehave.core.mock.Mock;
 import org.junit.Test;
@@ -11,6 +10,8 @@ import org.junit.Test;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import static junit.framework.Assert.assertSame;
 
 public class UnregistrationServletTest extends UsingClassMock {
 

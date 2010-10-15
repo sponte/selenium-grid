@@ -6,13 +6,7 @@ import com.thoughtworks.selenium.grid.hub.NoSuchSessionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -25,10 +19,10 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
     private final ConcurrentMap<String, RemoteControlSession> remoteControlsBySessionIds = new ConcurrentHashMap<String, RemoteControlSession>();
     private final ConcurrentMap<String, RemoteControlProvisioner> provisionersByEnvironment = new ConcurrentHashMap<String, RemoteControlProvisioner>();
 
-    public void register(RemoteControlProxy newRemoteControl) {
+    public void register(IRemoteControlProxy newRemoteControl) {
         final RemoteControlProvisioner provisioner;
 
-        synchronized(provisionersByEnvironment) {
+        synchronized (provisionersByEnvironment) {
             if (null == getProvisioner(newRemoteControl.environment())) {
                 createNewProvisionerForEnvironment(newRemoteControl.environment());
             }
@@ -37,10 +31,10 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         }
     }
 
-    public boolean unregister(RemoteControlProxy remoteControl) {
+    public boolean unregister(IRemoteControlProxy remoteControl) {
         final boolean status;
 
-        synchronized(provisionersByEnvironment) {
+        synchronized (provisionersByEnvironment) {
             synchronized (remoteControlsBySessionIds) {
                 Set<RemoteControlSession> sessionsToRemove = new HashSet<RemoteControlSession>();
 
@@ -60,9 +54,9 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         return status;
     }
 
-    public RemoteControlProxy reserve(Environment environment) {
+    public IRemoteControlProxy reserve(Environment environment) {
         final RemoteControlProvisioner provisioner;
-        
+
         provisioner = getProvisioner(environment.name());
         if (null == provisioner) {
             throw new NoSuchEnvironmentException(environment.name());
@@ -70,9 +64,9 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         return provisioner.reserve();
     }
 
-    public void associateWithSession(RemoteControlProxy remoteControl, String sessionId) {
+    public void associateWithSession(IRemoteControlProxy remoteControl, String sessionId) {
         LOGGER.info("Associating session id='" + sessionId + "' =>" + remoteControl
-                    + " for environment " + remoteControl.environment());
+                + " for environment " + remoteControl.environment());
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Asssociating " + sessionId + " => " + remoteControl);
         }
@@ -89,18 +83,18 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         }
     }
 
-    public RemoteControlProxy retrieve(String sessionId) {
+    public IRemoteControlProxy retrieve(String sessionId) {
         return getRemoteControlForSession(sessionId);
     }
 
-    public void release(RemoteControlProxy remoteControl) {
+    public void release(IRemoteControlProxy remoteControl) {
         getProvisioner(remoteControl.environment()).release(remoteControl);
     }
 
     public void releaseForSession(String sessionId) {
         LOGGER.info("Releasing pool for session id='" + sessionId + "'");
 
-        final RemoteControlProxy remoteControl;
+        final IRemoteControlProxy remoteControl;
         remoteControl = getRemoteControlForSession(sessionId);
 
         synchronized (remoteControlsBySessionIds) {
@@ -110,10 +104,10 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         getProvisioner(remoteControl.environment()).release(remoteControl);
     }
 
-    public List<RemoteControlProxy> availableRemoteControls() {
-        final List<RemoteControlProxy> availableRemoteControls;
+    public List<IRemoteControlProxy> availableRemoteControls() {
+        final List<IRemoteControlProxy> availableRemoteControls;
 
-        availableRemoteControls = new LinkedList<RemoteControlProxy>();
+        availableRemoteControls = new LinkedList<IRemoteControlProxy>();
         for (RemoteControlProvisioner provisioner : provisionersByEnvironment.values()) {
             availableRemoteControls.addAll(provisioner.availableRemoteControls());
         }
@@ -121,10 +115,10 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         return availableRemoteControls;
     }
 
-    public List<RemoteControlProxy> reservedRemoteControls() {
-        final List<RemoteControlProxy> reservedRemoteControls;
+    public List<IRemoteControlProxy> reservedRemoteControls() {
+        final List<IRemoteControlProxy> reservedRemoteControls;
 
-        reservedRemoteControls = new LinkedList<RemoteControlProxy>();
+        reservedRemoteControls = new LinkedList<IRemoteControlProxy>();
         for (RemoteControlProvisioner provisioner : provisionersByEnvironment.values()) {
             reservedRemoteControls.addAll(provisioner.reservedRemoteControls());
         }
@@ -132,11 +126,11 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         return reservedRemoteControls;
     }
 
-    public List<RemoteControlProxy> allRegisteredRemoteControls() {
-        final List<RemoteControlProxy> allRemoteControls;
+    public List<IRemoteControlProxy> allRegisteredRemoteControls() {
+        final List<IRemoteControlProxy> allRemoteControls;
 
-        allRemoteControls = new LinkedList<RemoteControlProxy>();
-        synchronized(provisionersByEnvironment) {
+        allRemoteControls = new LinkedList<IRemoteControlProxy>();
+        synchronized (provisionersByEnvironment) {
             for (RemoteControlProvisioner provisioner : provisionersByEnvironment.values()) {
                 allRemoteControls.addAll(provisioner.allRemoteControls());
             }
@@ -145,7 +139,7 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         return allRemoteControls;
     }
 
-    public boolean isRegistered(RemoteControlProxy remoteControl) {
+    public boolean isRegistered(IRemoteControlProxy remoteControl) {
         for (RemoteControlProvisioner provisioner : provisionersByEnvironment.values()) {
             if (provisioner.contains(remoteControl)) {
                 return true;
@@ -158,7 +152,7 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
         return provisionersByEnvironment.get(environment);
     }
 
-    protected RemoteControlProxy getRemoteControlForSession(String sessionId) {
+    protected IRemoteControlProxy getRemoteControlForSession(String sessionId) {
         final RemoteControlSession session;
 
         session = getRemoteControlSession(sessionId);
@@ -195,12 +189,12 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
     }
 
     public void unregisterAllUnresponsiveRemoteControls() {
-        for (RemoteControlProxy rc : allRegisteredRemoteControls()) {
+        for (IRemoteControlProxy rc : allRegisteredRemoteControls()) {
             unregisterRemoteControlIfUnreliable(rc);
         }
     }
 
-    protected void unregisterRemoteControlIfUnreliable(RemoteControlProxy rc) {
+    protected void unregisterRemoteControlIfUnreliable(IRemoteControlProxy rc) {
         if (rc.unreliable()) {
             LOGGER.warn("Unregistering unreliable RC " + rc);
             unregister(rc);
@@ -231,7 +225,7 @@ public class GlobalRemoteControlPool implements DynamicRemoteControlPool {
 
     public void recycleSessionIfIdleForTooLong(RemoteControlSession session, double maxIdleTimeInSeconds) {
         final int maxIdleTImeInMilliseconds;
-        
+
         maxIdleTImeInMilliseconds = (int) (maxIdleTimeInSeconds * 1000);
         if (session.innactiveForMoreThan(maxIdleTImeInMilliseconds)) {
             LOGGER.warn("Releasing session IDLE for more than " + maxIdleTimeInSeconds + " seconds: " + session);

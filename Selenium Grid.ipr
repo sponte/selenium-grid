@@ -325,7 +325,7 @@
         <inspection_tool class="NonThreadSafeLazyInitialization" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="NoopMethodInAbstractClass" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="ObsoleteCollection" enabled="true" level="WARNING" enabled_by_default="true">
-          <option name="ignoreLibraryArguments" value="false" />
+          <option name="ignoreRequiredObsoleteCollectionTypes" value="false" />
         </inspection_tool>
         <inspection_tool class="OverlyStrongTypeCast" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="ignoreInMatchingInstanceof" value="false" />
@@ -621,6 +621,13 @@
   <component name="ProjectDetails">
     <option name="projectName" value="Selenium Grid" />
   </component>
+  <component name="ProjectDictionaryState">
+    <dictionary name="stanw">
+      <words>
+        <w>selenese</w>
+      </words>
+    </dictionary>
+  </component>
   <component name="ProjectKey">
     <option name="state" value="project:///Users/ph7/Projects/Selenium-Grid/Selenium Grid.ipr" />
   </component>
@@ -661,6 +668,20 @@
         <entry key="$PROJECT_DIR$">
           <value>
             <SvnBranchConfiguration>
+              <option name="branchMap">
+                <map>
+                  <entry key="https://svn.seleniumhq.org/svn/selenium-grid/tags">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                  <entry key="https://svn.seleniumhq.org/svn/selenium-grid/website">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                </map>
+              </option>
               <option name="branchUrls">
                 <list>
                   <option value="https://svn.seleniumhq.org/svn/selenium-grid/tags" />
@@ -683,10 +704,12 @@
   <component name="libraryTable">
     <library name="Selenium Java Client Driver">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/vendor/selenium-server-1.0.3-standalone.jar!/" />
+        <root url="jar://$PROJECT_DIR$/vendor/selenium-java-2.0a6.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="file://D:/Selenium/remote/client/src/java" />
+      </SOURCES>
     </library>
     <library name="HttpClient">
       <CLASSES>
@@ -707,6 +730,7 @@
         <root url="jar://$PROJECT_DIR$/vendor/mockito-all-1.8.4.jar!/" />
         <root url="jar://$PROJECT_DIR$/vendor/cglib-nodep-2.1_3.jar!/" />
         <root url="jar://$PROJECT_DIR$/vendor/proxytoys-0.2.1.jar!/" />
+        <root url="jar://$PROJECT_DIR$/vendor/junit-4.7.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
@@ -718,14 +742,18 @@
         <root url="jar://$PROJECT_DIR$/vendor/jetty-util-6.1.24.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/vendor/jetty-6.1.24.jar!/" />
+      </SOURCES>
     </library>
     <library name="Selenium Remote Control">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/vendor/selenium-server-1.0.3-standalone.jar!/" />
+        <root url="jar://$PROJECT_DIR$/vendor/selenium-server-standalone-2.0a6.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="file://D:/Selenium/remote/server/src/java" />
+      </SOURCES>
     </library>
     <library name="Web">
       <CLASSES>
@@ -769,6 +797,13 @@
     <library name="JUnit">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/vendor/junit-4.7.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="JSon">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/vendor/json.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

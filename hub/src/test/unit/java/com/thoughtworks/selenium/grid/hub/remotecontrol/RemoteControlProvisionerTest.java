@@ -1,14 +1,11 @@
 package com.thoughtworks.selenium.grid.hub.remotecontrol;
 
 import com.thoughtworks.selenium.grid.hub.ConcurrentAction;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertSame;
-
 import com.thoughtworks.selenium.grid.hub.HubRegistry;
 import org.junit.Test;
+
+import static junit.framework.Assert.*;
+import static org.junit.Assert.assertSame;
 
 public class RemoteControlProvisionerTest {
 
@@ -22,34 +19,34 @@ public class RemoteControlProvisionerTest {
         assertTrue(provisioner.availableRemoteControls().contains(remoteControl));
     }
 
-	@Test
-	public void whenAddingTwoRemoteControlsThatAreEqualsTheFirstIsReplacedByTheSecond() {
-		final RemoteControlProvisioner provisioner;
-        final RemoteControlProxy availableRc;
+    @Test
+    public void whenAddingTwoRemoteControlsThatAreEqualsTheFirstIsReplacedByTheSecond() {
+        final RemoteControlProvisioner provisioner;
+        final IRemoteControlProxy availableRc;
 
-		provisioner = new RemoteControlProvisioner();
+        provisioner = new RemoteControlProvisioner();
 
-		RemoteControlProxy oldRC = new RemoteControlProxy("a", 0, "", null);
-		RemoteControlProxy newRC = new RemoteControlProxy("a", 0, "", null);
+        RemoteControlProxy oldRC = new RemoteControlProxy("a", 0, "", null);
+        RemoteControlProxy newRC = new RemoteControlProxy("a", 0, "", null);
 
-		provisioner.add(oldRC);
-		provisioner.add(newRC);
+        provisioner.add(oldRC);
+        provisioner.add(newRC);
 
         availableRc = provisioner.findNextAvailableRemoteControl();
         assertSame(newRC, availableRc);
-	}
+    }
 
-	@Test
-	public void whenReplacingRemoteControlFirstRemoveAllRegisteredSessions() {
+    @Test
+    public void whenReplacingRemoteControlFirstRemoveAllRegisteredSessions() {
         final RemoteControlProvisioner provisioner;
 
         provisioner = new RemoteControlProvisioner();
-		RemoteControlProxy oldRC = new RemoteControlProxy("a", 0, "", null);
+        RemoteControlProxy oldRC = new RemoteControlProxy("a", 0, "", null);
         RemoteControlProxy newRC = new RemoteControlProxy("a", 0, "", null);
 
-	    oldRC.registerNewSession();
+        oldRC.registerNewSession();
 
-		assertTrue(oldRC.sessionInProgress());
+        assertTrue(oldRC.sessionInProgress());
 
         provisioner.add(oldRC);
         provisioner.add(newRC);
@@ -57,15 +54,15 @@ public class RemoteControlProvisionerTest {
         assertEquals(0, provisioner.reservedRemoteControls().size());
         assertEquals(1, provisioner.availableRemoteControls().size());
         assertEquals(newRC,
-                     provisioner.availableRemoteControls().get(0));
-		assertFalse(newRC.sessionInProgress());
+                provisioner.availableRemoteControls().get(0));
+        assertFalse(newRC.sessionInProgress());
     }
 
     @Test
     public void multipleRemoteControlsCanBeAdded() {
         final RemoteControlProvisioner provisioner;
-        final RemoteControlProxy firstRemoteControl;
-        final RemoteControlProxy secondRemoteControl;
+        final IRemoteControlProxy firstRemoteControl;
+        final IRemoteControlProxy secondRemoteControl;
 
         provisioner = new RemoteControlProvisioner();
         firstRemoteControl = new RemoteControlProxy("a", 0, "", null);
@@ -81,7 +78,7 @@ public class RemoteControlProvisionerTest {
     @Test
     public void onceRemovedARemoteControlIsNotPartOfTheAvailableList() {
         final RemoteControlProvisioner provisioner = new RemoteControlProvisioner();
-        final RemoteControlProxy remoteControl = new RemoteControlProxy("", 0, "", null);
+        final IRemoteControlProxy remoteControl = new RemoteControlProxy("", 0, "", null);
         provisioner.add(remoteControl);
 
         provisioner.remove(remoteControl);
@@ -91,8 +88,8 @@ public class RemoteControlProvisionerTest {
     @Test
     public void removeOnlyRemovesASpecificRemoteControl() {
         final RemoteControlProvisioner provisioner = new RemoteControlProvisioner();
-        final RemoteControlProxy firstRemoteControl = new HealthyRemoteControl("a", 0, "", null);
-        final RemoteControlProxy secondRemoteControl = new HealthyRemoteControl("b", 0, "", null);
+        final IRemoteControlProxy firstRemoteControl = new HealthyRemoteControl("a", 0, "", null);
+        final IRemoteControlProxy secondRemoteControl = new HealthyRemoteControl("b", 0, "", null);
         provisioner.add(firstRemoteControl);
         provisioner.add(secondRemoteControl);
 
@@ -110,7 +107,7 @@ public class RemoteControlProvisionerTest {
     @Test
     public void removeReturnsTrueForAnAvailableRemoteControl() {
         final RemoteControlProvisioner provisioner = new RemoteControlProvisioner();
-        final RemoteControlProxy remoteControl = new RemoteControlProxy("", 0, "", null);
+        final IRemoteControlProxy remoteControl = new RemoteControlProxy("", 0, "", null);
         provisioner.add(remoteControl);
 
         assertTrue(provisioner.remove(remoteControl));
@@ -119,7 +116,7 @@ public class RemoteControlProvisionerTest {
     @Test
     public void removeReturnsTrueForAReservedRemoteControl() {
         final RemoteControlProvisioner provisioner = new RemoteControlProvisioner();
-        final RemoteControlProxy remoteControl = new HealthyRemoteControl("", 0, "", null);
+        final IRemoteControlProxy remoteControl = new HealthyRemoteControl("", 0, "", null);
         provisioner.add(remoteControl);
         provisioner.reserve();
 
@@ -363,7 +360,7 @@ public class RemoteControlProvisionerTest {
 
     @Test
     public void reservedRemoteControlsReturnsAnEmptyArrayWhenNoneHaveBeenAdded() {
-      assertTrue(new RemoteControlProvisioner().reservedRemoteControls().isEmpty());
+        assertTrue(new RemoteControlProvisioner().reservedRemoteControls().isEmpty());
     }
 
     @Test
@@ -385,10 +382,10 @@ public class RemoteControlProvisionerTest {
         assertEquals(1, provisioner.reservedRemoteControls().size());
         assertTrue(provisioner.reservedRemoteControls().contains(remoteControl));
     }
-    
+
     @Test
     public void availableRemoteControlsReturnsAnEmptyArrayWhenNoneHaveBeenAdded() {
-      assertTrue(new RemoteControlProvisioner().availableRemoteControls().isEmpty());
+        assertTrue(new RemoteControlProvisioner().availableRemoteControls().isEmpty());
     }
 
     @Test
@@ -403,7 +400,7 @@ public class RemoteControlProvisionerTest {
 
     @Test
     public void allRemoteControlsReturnsAnEmptyArrayWhenNoneHaveBeenAdded() {
-      assertTrue(new RemoteControlProvisioner().allRemoteControls().isEmpty());
+        assertTrue(new RemoteControlProvisioner().allRemoteControls().isEmpty());
     }
 
     @Test

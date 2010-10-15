@@ -12,6 +12,7 @@
     <orderEntry type="library" name="Commons" level="project" />
     <orderEntry type="library" name="Yaml" level="project" />
     <orderEntry type="library" name="HttpClient" level="project" />
+    <orderEntry type="library" name="Jetty" level="project" />
   </component>
   <component name="RSpecModuleSettingsStorage">
     <RSPEC_MODULE_SETTINGS_STORAGE_ID NAME="RSPEC_SUPPORT_TYPE" VALUE="NONE" />

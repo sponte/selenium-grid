@@ -10,12 +10,12 @@ public interface RemoteControlPool {
     /**
      * Gain exclusive access to a remote control it is released.
      *
-     * @param environment  Environment that the remote control must provide. Should not be null.
+     * @param environment Environment that the remote control must provide. Should not be null.
      * @return Reserved remote control. Never null.
-     * @see RemoteControlPool#release(RemoteControlProxy)
+     * @see RemoteControlPool#release(com.thoughtworks.selenium.grid.hub.remotecontrol.IRemoteControlProxy)
      * @see RemoteControlPool#releaseForSession(String)
      */
-    RemoteControlProxy reserve(Environment environment);
+    IRemoteControlProxy reserve(Environment environment);
 
     /**
      * Associates a reserved remote control with a Selenese session id. Once associated
@@ -25,29 +25,29 @@ public interface RemoteControlPool {
      * @param sessionId     Id of the session to associate the remote control with. Should not be null.
      * @see RemoteControlPool#retrieve(String)
      */
-    void associateWithSession(RemoteControlProxy remoteControl, String sessionId);
+    void associateWithSession(IRemoteControlProxy remoteControl, String sessionId);
 
     /**
      * Returns the remote control associated with a specific Selenese session.
      *
-     * @param sessionId  Id of the Selenese session. Should not be null.
+     * @param sessionId Id of the Selenese session. Should not be null.
      * @return Associated remote control.
      */
-    RemoteControlProxy retrieve(String sessionId);
+    IRemoteControlProxy retrieve(String sessionId);
 
     /**
      * Release a remote control that was previously reserved, so it can be used to serve other
      * Selenese sessions.
      *
-     * @param remoteControl  Previously reserved remote control. Should not be null.
+     * @param remoteControl Previously reserved remote control. Should not be null.
      */
-    void release(RemoteControlProxy remoteControl);
+    void release(IRemoteControlProxy remoteControl);
 
     /**
      * Release a remote control that was previously reserved, so it can be used to serve other
      * Selenese sessions.
      *
-     * @param sessionId  Id of the selenese session the remote control is associated with. Should not be null.
+     * @param sessionId Id of the selenese session the remote control is associated with. Should not be null.
      */
     void releaseForSession(String sessionId);
 

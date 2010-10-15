@@ -1,18 +1,21 @@
 package com.thoughtworks.selenium.grid;
 
+import org.jbehave.classmock.UsingClassMock;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+
 
 /**
  * Helper Class for Custom Assertions.
  */
-public class AssertionHelper {
+public class AssertionHelper extends UsingClassMock {
 
     public static void assertNotEquals(Object anObject, Object theOther) {
         if (null == anObject) {
             assertFalse(null == theOther);
         } else {
-          assertFalse(anObject.equals(theOther));
+            assertFalse(anObject.equals(theOther));
         }
     }
 
@@ -23,5 +26,6 @@ public class AssertionHelper {
     public static void assertDistinctHashCodes(Object anObject, Object another) {
         assertNotEquals(anObject.hashCode(), another.hashCode());
     }
+
 
 }

@@ -1,7 +1,5 @@
 package com.thoughtworks.selenium.grid;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -11,6 +9,9 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.net.ConnectException;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 
 public class HttpClientTest extends UsingClassMock {
@@ -78,7 +79,7 @@ public class HttpClientTest extends UsingClassMock {
     @Test
     public void buildPostMethodUsesURLProvidedAsAParameter() throws IOException {
         final PostMethod postmethod;
-        
+
         postmethod = new HttpClient().buildPostMethod("http://a.url/somwhere", new HttpParameters());
         assertEquals("http://a.url/somwhere", postmethod.getURI().toString());
     }
@@ -101,7 +102,7 @@ public class HttpClientTest extends UsingClassMock {
         final HttpClient httpClient;
         final Response expectedResponse;
 
-        expectedResponse = new Response(null);
+        expectedResponse = new Response();
         httpClient = new HttpClient(null) {
 
             protected Response request(HttpMethod method) throws IOException {
@@ -109,7 +110,7 @@ public class HttpClientTest extends UsingClassMock {
                 assertEquals("http://a.url/", method.getURI().toString());
                 return expectedResponse;
             }
-            
+
         };
         assertEquals(expectedResponse, httpClient.get("http://a.url/"));
 
@@ -120,7 +121,7 @@ public class HttpClientTest extends UsingClassMock {
         final HttpClient httpClient;
         final Response expectedResponse;
 
-        expectedResponse = new Response(null);
+        expectedResponse = new Response();
         httpClient = new HttpClient(null) {
 
             protected Response request(HttpMethod method) throws IOException {
@@ -139,7 +140,7 @@ public class HttpClientTest extends UsingClassMock {
         final HttpParameters parameters;
         final HttpClient httpClient;
 
-        expectedResponse = new Response(null);
+        expectedResponse = new Response();
         httpClient = new HttpClient(null) {
 
             protected Response request(HttpMethod method) throws IOException {
@@ -163,12 +164,12 @@ public class HttpClientTest extends UsingClassMock {
         final Response expectedResponse;
         final HttpClient httpClient;
 
-        expectedResponse = new Response(null);
+        expectedResponse = new Response();
         httpClient = new HttpClient(null) {
 
             protected Response request(HttpMethod method) throws IOException {
                 assertEquals("application/x-www-form-urlencoded; ; charset=UTF-8",
-                             method.getRequestHeader("Content-Type").getValue());
+                        method.getRequestHeader("Content-Type").getValue());
                 return expectedResponse;
             }
 

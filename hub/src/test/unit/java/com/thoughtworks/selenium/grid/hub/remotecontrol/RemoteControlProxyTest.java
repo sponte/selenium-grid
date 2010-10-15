@@ -1,21 +1,19 @@
 package com.thoughtworks.selenium.grid.hub.remotecontrol;
 
-import static com.thoughtworks.selenium.grid.AssertionHelper.assertDistinctHashCodes;
-import static com.thoughtworks.selenium.grid.AssertionHelper.assertNotEquals;
-import static com.thoughtworks.selenium.grid.AssertionHelper.assertSameHashCode;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-
-import org.junit.Test;
-
 import com.thoughtworks.selenium.grid.HttpClient;
 import com.thoughtworks.selenium.grid.HttpParameters;
+import com.thoughtworks.selenium.grid.MockHelper;
 import com.thoughtworks.selenium.grid.Response;
+import org.apache.commons.httpclient.Header;
+import org.junit.Test;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+
+import static com.thoughtworks.selenium.grid.AssertionHelper.*;
+import static junit.framework.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class RemoteControlProxyTest {
 
@@ -114,25 +112,26 @@ public class RemoteControlProxyTest {
         final RemoteControlProxy proxy = new RemoteControlProxy("localhost", 5555, "", null);
         assertEquals("http://localhost:5555/selenium-server/heartbeat", proxy.remoteControlPingURL());
     }
-	
+
     @Test
     public void forwardReturnsTheResponseOfTheSeleniumRC() throws IOException {
-        final RemoteControlProxy proxy;
+        final IRemoteControlProxy proxy;
         final Response expectedResponse;
         final HttpParameters parameters;
-        
+
         HttpClient client = mock(HttpClient.class);
         parameters = new HttpParameters();
-        expectedResponse = new Response(0, "");
+        HttpServletRequest request = MockHelper.GetMockRequestWithParameters(parameters);
+        expectedResponse = new Response(0, "", new Header[]{});
         when(client.post("http://foo:10/selenium-server/driver/", parameters)).thenReturn(expectedResponse);
         proxy = new RemoteControlProxy("foo", 10, "", (HttpClient) client);
-        assertEquals(expectedResponse, proxy.forward(parameters));
+        assertEquals(expectedResponse, proxy.forward(request));
     }
 
     @Test
     public void toStringMethodReturnsAHumanFriendlyDescriptionWithServerAndPortInformation() {
         assertEquals("[RemoteControlProxy grid.thoughtworks.org:4444#false]",
-                     new RemoteControlProxy("grid.thoughtworks.org", 4444, "", null).toString());
+                new RemoteControlProxy("grid.thoughtworks.org", 4444, "", null).toString());
     }
 
     @Test
@@ -161,7 +160,7 @@ public class RemoteControlProxyTest {
     @Test
     public void twoRemoteControlsAreEqualIfTheirHostAndPortMatch() {
         assertEquals(new RemoteControlProxy("a.host.com", 24, "", new HttpClient()),
-                     new RemoteControlProxy("a.host.com", 24, "", new HttpClient()));
+                new RemoteControlProxy("a.host.com", 24, "", new HttpClient()));
     }
 
     @Test
@@ -187,7 +186,7 @@ public class RemoteControlProxyTest {
     @Test
     public void twoRemoteControlsHaveTheSameHashcodeIfTheirHostAndPortMatch() {
         assertSameHashCode(new RemoteControlProxy("a.host.com", 24, "", new HttpClient()),
-                           new RemoteControlProxy("a.host.com", 24, "", new HttpClient()));
+                new RemoteControlProxy("a.host.com", 24, "", new HttpClient()));
     }
 
     @Test
@@ -216,7 +215,7 @@ public class RemoteControlProxyTest {
         final Response successfulResponse;
 
         HttpClient client = mock(HttpClient.class);
-        successfulResponse = new Response(200, "");
+        successfulResponse = new Response(200, "", new Header[]{});
         when(client.get("http://foo:10/selenium-server/heartbeat")).thenReturn(successfulResponse);
         proxy = new RemoteControlProxy("foo", 10, "", (HttpClient) client);
         proxy.registerNewSession();
@@ -227,15 +226,15 @@ public class RemoteControlProxyTest {
     public void unreliableReturnsTrueWhenTheResponseIsA500() throws IOException {
         final RemoteControlProxy proxy;
         final Response badResponse;
-        
+
         HttpClient client = mock(HttpClient.class);
-        badResponse = new Response(500, "");
+        badResponse = new Response(500, "", new Header[]{});
         when(client.get("http://foo:10/selenium-server/heartbeat")).thenReturn(badResponse);
         proxy = new RemoteControlProxy("foo", 10, "", (HttpClient) client);
         proxy.registerNewSession();
         assertTrue(proxy.unreliable());
     }
-    
+
     @Test
     public void unreliableReturnsTrueWhenTheRemoteControlCannotBeReached() throws IOException {
         final RemoteControlProxy proxy;
@@ -246,22 +245,22 @@ public class RemoteControlProxyTest {
         proxy.registerNewSession();
         assertTrue(proxy.unreliable());
     }
-	
+
     @Test
     public void unreliableReturnsFalseWhenTheRemoteControlCannotBeReachedAtFirstButRecovers() throws IOException {
         final RemoteControlProxy proxy;
         final Response successfulResponse;
 
         HttpClient client = mock(HttpClient.class);
-        successfulResponse = new Response(200, "");
+        successfulResponse = new Response(200, "", new Header[]{});
         when(client.get("http://foo:10/selenium-server/heartbeat"))
-    		.thenThrow(new RuntimeException())
-    		.thenReturn(successfulResponse);
+                .thenThrow(new RuntimeException())
+                .thenReturn(successfulResponse);
         proxy = new RemoteControlProxy("foo", 10, "", (HttpClient) client);
         proxy.registerNewSession();
         assertFalse(proxy.unreliable());
     }
-	
+
     @Test
     public void unreliableReturnsFalseWhenTheResponseIsA500ThenA200() throws IOException {
         final RemoteControlProxy proxy;
@@ -269,12 +268,12 @@ public class RemoteControlProxyTest {
         final Response successfulResponse;
 
         HttpClient client = mock(HttpClient.class);
-        badResponse = new Response(500, "");
-        successfulResponse = new Response(200, "");
+        badResponse = new Response(500, "", new Header[]{});
+        successfulResponse = new Response(200, "", new Header[]{});
         when(client.get("http://foo:10/selenium-server/heartbeat")).thenReturn(badResponse, successfulResponse);
         proxy = new RemoteControlProxy("foo", 10, "", (HttpClient) client);
         proxy.registerNewSession();
         assertFalse(proxy.unreliable());
     }
-	
+
 }

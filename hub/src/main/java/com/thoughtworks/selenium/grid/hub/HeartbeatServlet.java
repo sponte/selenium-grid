@@ -3,12 +3,11 @@ package com.thoughtworks.selenium.grid.hub;
 import com.thoughtworks.selenium.grid.hub.remotecontrol.DynamicRemoteControlPool;
 import com.thoughtworks.selenium.grid.hub.remotecontrol.RemoteControlProxy;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
 import java.io.IOException;
-import java.text.ParseException;
 
 /**
  * Provides feedback that the Hub is still up and running
@@ -35,8 +34,8 @@ public class HeartbeatServlet extends HttpServlet {
         final RemoteControlProxy remoteControl;
 
         try {
-          remoteControl = new RemoteControlProxy(host, Integer.parseInt(port), "dummy", null);
-        } catch(NumberFormatException e) {
+            remoteControl = new RemoteControlProxy(host, Integer.parseInt(port), "dummy", null);
+        } catch (NumberFormatException e) {
             return false;
         }
         return remoteControlPool().isRegistered(remoteControl);

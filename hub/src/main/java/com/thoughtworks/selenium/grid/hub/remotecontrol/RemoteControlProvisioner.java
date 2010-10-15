@@ -23,17 +23,17 @@ import java.util.concurrent.locks.ReentrantLock;
 public class RemoteControlProvisioner {
 
     private static final Log LOGGER = LogFactory.getLog(RemoteControlProvisioner.class);
-    private final List<RemoteControlProxy> remoteControls;
+    private final List<IRemoteControlProxy> remoteControls;
     private final Lock remoteControlListLock;
     private final Condition remoteControlAvailable;
 
     public RemoteControlProvisioner() {
-        remoteControls = new LinkedList<RemoteControlProxy>();
+        remoteControls = new LinkedList<IRemoteControlProxy>();
         remoteControlListLock = new ReentrantLock();
         remoteControlAvailable = remoteControlListLock.newCondition();
     }
 
-    public RemoteControlProxy reserve() {
+    public IRemoteControlProxy reserve() {
         remoteControlListLock.lock();
 
         try {
@@ -41,7 +41,7 @@ public class RemoteControlProvisioner {
                 return null;
             }
 
-            RemoteControlProxy remoteControl = blockUntilARemoteControlIsAvailableOrRequestTimesOut();
+            IRemoteControlProxy remoteControl = blockUntilARemoteControlIsAvailableOrRequestTimesOut();
             if (null == remoteControl) {
                 LOGGER.info("Timed out waiting for a remote control for environment.");
                 return null;
@@ -67,7 +67,7 @@ public class RemoteControlProvisioner {
         }
     }
 
-    public void release(RemoteControlProxy remoteControl) {
+    public void release(IRemoteControlProxy remoteControl) {
         remoteControlListLock.lock();
 
         try {
@@ -79,7 +79,7 @@ public class RemoteControlProvisioner {
         }
     }
 
-    public void add(RemoteControlProxy newRemoteControl) {
+    public void add(IRemoteControlProxy newRemoteControl) {
         remoteControlListLock.lock();
 
         try {
@@ -93,19 +93,21 @@ public class RemoteControlProvisioner {
         }
     }
 
-    /** Not Thread-safe */
-    public boolean contains(RemoteControlProxy remoteControl) {
+    /**
+     * Not Thread-safe
+     */
+    public boolean contains(IRemoteControlProxy remoteControl) {
         return remoteControls.contains(remoteControl);
     }
 
-    public void tearDownExistingRemoteControl(RemoteControlProxy newRemoteControl) {
-        final RemoteControlProxy oldRemoteControl;
+    public void tearDownExistingRemoteControl(IRemoteControlProxy newRemoteControl) {
+        final IRemoteControlProxy oldRemoteControl;
 
         oldRemoteControl = remoteControls.get(remoteControls.indexOf(newRemoteControl));
         remoteControls.remove(oldRemoteControl);
     }
 
-    public boolean remove(RemoteControlProxy remoteControl) {
+    public boolean remove(IRemoteControlProxy remoteControl) {
         remoteControlListLock.lock();
 
         try {
@@ -120,16 +122,16 @@ public class RemoteControlProvisioner {
      *
      * @return All available remote controls. Never null.
      */
-    public List<RemoteControlProxy> availableRemoteControls() {
-        final LinkedList<RemoteControlProxy> availableremoteControls;
+    public List<IRemoteControlProxy> availableRemoteControls() {
+        final LinkedList<IRemoteControlProxy> availableremoteControls;
 
-        availableremoteControls = new LinkedList<RemoteControlProxy>();
-        for (RemoteControlProxy remoteControl : remoteControls) {
+        availableremoteControls = new LinkedList<IRemoteControlProxy>();
+        for (IRemoteControlProxy remoteControl : remoteControls) {
             if (remoteControl.canHandleNewSession()) {
                 availableremoteControls.add(remoteControl);
             }
         }
-        return Arrays.asList(availableremoteControls.toArray(new RemoteControlProxy[availableremoteControls.size()]));
+        return Arrays.asList(availableremoteControls.toArray(new IRemoteControlProxy[availableremoteControls.size()]));
     }
 
     /**
@@ -137,20 +139,20 @@ public class RemoteControlProvisioner {
      *
      * @return All reserved remote controls. Never null.
      */
-    public List<RemoteControlProxy> reservedRemoteControls() {
-        final LinkedList<RemoteControlProxy> reservedRemoteControls;
+    public List<IRemoteControlProxy> reservedRemoteControls() {
+        final LinkedList<IRemoteControlProxy> reservedRemoteControls;
 
-        reservedRemoteControls = new LinkedList<RemoteControlProxy>();
-        for (RemoteControlProxy remoteControl : remoteControls) {
+        reservedRemoteControls = new LinkedList<IRemoteControlProxy>();
+        for (IRemoteControlProxy remoteControl : remoteControls) {
             if (remoteControl.sessionInProgress()) {
                 reservedRemoteControls.add(remoteControl);
             }
         }
-        return Arrays.asList(reservedRemoteControls.toArray(new RemoteControlProxy[reservedRemoteControls.size()]));
+        return Arrays.asList(reservedRemoteControls.toArray(new IRemoteControlProxy[reservedRemoteControls.size()]));
     }
 
-    protected RemoteControlProxy blockUntilARemoteControlIsAvailableOrRequestTimesOut() {
-        RemoteControlProxy availableRemoteControl;
+    protected IRemoteControlProxy blockUntilARemoteControlIsAvailableOrRequestTimesOut() {
+        IRemoteControlProxy availableRemoteControl;
 
         while (true) {
             try {
@@ -173,8 +175,8 @@ public class RemoteControlProvisioner {
      *
      * @return Next Available remote control. Null if none is available.
      */
-    protected RemoteControlProxy findNextAvailableRemoteControl() {
-        for (RemoteControlProxy remoteControl : remoteControls) {
+    protected IRemoteControlProxy findNextAvailableRemoteControl() {
+        for (IRemoteControlProxy remoteControl : remoteControls) {
             if (remoteControl.canHandleNewSession()) {
                 return remoteControl;
             }
@@ -182,13 +184,12 @@ public class RemoteControlProvisioner {
         return null;
     }
 
-  /**
-   * Wait for a remote control to be available or timeout while waiting.
-   *
-   * @return Indicates whether the request timed out.
-   * 
-   * @throws InterruptedException
-   */
+    /**
+     * Wait for a remote control to be available or timeout while waiting.
+     *
+     * @return Indicates whether the request timed out.
+     * @throws InterruptedException
+     */
     protected boolean waitForARemoteControlToBeAvailable() throws InterruptedException {
         final Double maxWaitTime = HubRegistry.registry().gridConfiguration().getHub().getNewSessionMaxWaitTimeInSeconds();
 
@@ -205,11 +206,11 @@ public class RemoteControlProvisioner {
     }
 
 
-    public List<RemoteControlProxy> allRemoteControls() {
-        final LinkedList<RemoteControlProxy> allRemoteControls;
+    public List<IRemoteControlProxy> allRemoteControls() {
+        final LinkedList<IRemoteControlProxy> allRemoteControls;
 
-        allRemoteControls = new LinkedList<RemoteControlProxy>();
-        for (RemoteControlProxy remoteControl : remoteControls) {
+        allRemoteControls = new LinkedList<IRemoteControlProxy>();
+        for (IRemoteControlProxy remoteControl : remoteControls) {
             allRemoteControls.add(remoteControl);
         }
 
