@@ -1,31 +1,31 @@
 <project name="Selenium Grid Tools" default="package" basedir=".">
 
-  <description>Selenium Grid Automation Tools</description>
+    <description>Selenium Grid Automation Tools</description>
 
-  <property name="rootdir" value="${basedir}/.."/>
-  <property file="${rootdir}/project.properties"/>
-  <property name="name" value="Selenium Grid Tools"/>
-  <property name="artifact" value="selenium-grid-tools"/>
-  <property name="version" value="SNAPSHOT"/>
+    <property name="rootdir" value="${basedir}/.."/>
+    <property file="${rootdir}/project.properties"/>
+    <property name="name" value="Selenium Grid Tools"/>
+    <property name="artifact" value="selenium-grid-tools"/>
+    <property name="version" value="SNAPSHOT"/>
 
-  <property name="build.src" location="src/main"/>
+    <property name="build.src" location="src/main"/>
 
-  <import file="${rootdir}/lib/build/common-build.xml" />
+    <import file="${rootdir}/lib/build/common-build.xml"/>
 
-  <path id="compile.classpath">
-    <fileset dir="${rootdir}/vendor">
-      <include name="selenium-java-client-driver-${selenium.version}.jar"/>
-      <include name="commons-logging-1.1.1.jar"/>      
-    </fileset>
-    <pathelement path="${java.class.path}/"/>
-  </path>
+    <path id="compile.classpath">
+        <fileset dir="${rootdir}/vendor">
+            <include name="selenium-java-${selenium.version}.jar"/>
+            <include name="commons-logging-1.1.1.jar"/>
+        </fileset>
+        <pathelement path="${java.class.path}/"/>
+    </path>
 
-  <target name="package-standalone" depends="package" description="Package as a jar including all dependencies">
-    <package-standalone-jar main-class="">
-      <dependencies>
-        <zipfileset src="${rootdir}/vendor/commons-logging-1.1.1.jar"/>
-      </dependencies>
-    </package-standalone-jar>
-  </target>
+    <target name="package-standalone" depends="package" description="Package as a jar including all dependencies">
+        <package-standalone-jar main-class="">
+            <dependencies>
+                <zipfileset src="${rootdir}/vendor/commons-logging-1.1.1.jar"/>
+            </dependencies>
+        </package-standalone-jar>
+    </target>
 
 </project>

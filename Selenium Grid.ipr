@@ -622,11 +622,7 @@
     <option name="projectName" value="Selenium Grid" />
   </component>
   <component name="ProjectDictionaryState">
-    <dictionary name="stanw">
-      <words>
-        <w>selenese</w>
-      </words>
-    </dictionary>
+    <dictionary name="swozniak" />
   </component>
   <component name="ProjectKey">
     <option name="state" value="project:///Users/ph7/Projects/Selenium-Grid/Selenium Grid.ipr" />
@@ -707,9 +703,7 @@
         <root url="jar://$PROJECT_DIR$/vendor/selenium-java-2.0a6.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES>
-        <root url="file://D:/Selenium/remote/client/src/java" />
-      </SOURCES>
+      <SOURCES />
     </library>
     <library name="HttpClient">
       <CLASSES>
@@ -730,7 +724,6 @@
         <root url="jar://$PROJECT_DIR$/vendor/mockito-all-1.8.4.jar!/" />
         <root url="jar://$PROJECT_DIR$/vendor/cglib-nodep-2.1_3.jar!/" />
         <root url="jar://$PROJECT_DIR$/vendor/proxytoys-0.2.1.jar!/" />
-        <root url="jar://$PROJECT_DIR$/vendor/junit-4.7.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
@@ -742,18 +735,14 @@
         <root url="jar://$PROJECT_DIR$/vendor/jetty-util-6.1.24.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES>
-        <root url="jar://$PROJECT_DIR$/vendor/jetty-6.1.24.jar!/" />
-      </SOURCES>
+      <SOURCES />
     </library>
     <library name="Selenium Remote Control">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/vendor/selenium-server-standalone-2.0a6.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES>
-        <root url="file://D:/Selenium/remote/server/src/java" />
-      </SOURCES>
+      <SOURCES />
     </library>
     <library name="Web">
       <CLASSES>
@@ -797,13 +786,6 @@
     <library name="JUnit">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/vendor/junit-4.7.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-    </library>
-    <library name="JSon">
-      <CLASSES>
-        <root url="jar://$PROJECT_DIR$/vendor/json.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

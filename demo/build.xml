@@ -26,7 +26,7 @@
 
     <path id="compile.classpath">
         <fileset dir="${rootdir}/vendor">
-            <include name="selenium-java-client-driver-${selenium.version}.jar"/>
+            <include name="selenium-java-${selenium.version}.jar"/>
             <include name="testng-5.7-jdk15.jar"/>
             <include name="commons-logging-1.1.1.jar"/>
         </fileset>
