@@ -128,7 +128,7 @@
             <copy todir="${test.output}" verbose="true">
                 <fileset dir="${test.src}" includes="**/*.html"/>
             </copy>
-            <junit printSummary="yes" haltonerror="true" haltonfailure="true" fork="false" dir="${test.reports}">
+            <junit printSummary="yes" haltonerror="true" haltonfailure="true" fork="true" dir="${test.reports}">
                 <options/>
                 <classpath refid="unit-testing.classpath"/>
                 <formatter type="xml"/>
@@ -167,7 +167,7 @@
                 <fileset dir="${test.functional.src}" includes="**/*.html"/>
             </copy>
             <echo message="${test.functional.src}"/>
-            <junit printSummary="yes" haltonerror="true" haltonfailure="true" fork="false" dir="${test.reports}">
+            <junit printSummary="yes" haltonerror="true" haltonfailure="true" fork="true" dir="${test.reports}">
                 <options/>
                 <classpath refid="functional-testing.classpath"/>
                 <formatter type="xml"/>
