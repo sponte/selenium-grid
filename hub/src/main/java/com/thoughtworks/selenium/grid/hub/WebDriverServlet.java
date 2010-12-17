@@ -73,7 +73,7 @@ public class WebDriverServlet extends HttpServlet {
         final String responseBody = response.body();
         if (responseBody.length() > 256) {
             final int truncated = responseBody.length() - 256;
-            LOGGER.info(String.format("Responding with %d / %s...[%d characters truncated]", response.statusCode(), responseBody.substring(0, 256), truncated));
+            LOGGER.info(String.format("Responding with %d / %s... [%d characters truncated]", response.statusCode(), responseBody.substring(0, 256), truncated));
         } else {
             LOGGER.info(String.format("Responding with %d / %s", response.statusCode(), responseBody));
         }
@@ -82,12 +82,19 @@ public class WebDriverServlet extends HttpServlet {
     }
 
     protected void reply(HttpServletResponse response, Response remoteControlResponse) throws IOException {
-        if (remoteControlResponse.statusCode() != 204) {
+        int statusCode = remoteControlResponse.statusCode();
+        String body = remoteControlResponse.body();
+
+        response.setStatus(statusCode);
+
+        System.out.println(response.toString());
+
+        if (statusCode != 204) {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().print(remoteControlResponse.body());
+            response.getWriter().print(body);
         }
-        response.setStatus(remoteControlResponse.statusCode());
+
     }
 
     @SuppressWarnings({"unchecked"})

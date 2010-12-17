@@ -104,6 +104,10 @@
             </fileset>
         </copy>
         <mkdir dir="${dist}/${artifact}-${version}/log"/>
+        <mkdir dir="${dist}/${artifact}-${version}/pid"/>
+        <propertyfile file="${dist}/${artifact}-${version}/project.properties">
+            <entry key="version" type="string" operation="=" value="${version}"/>
+        </propertyfile>
     </target>
 
     <target name="dist-bin" depends="build-bin-dist" description="Package binary distribution">
