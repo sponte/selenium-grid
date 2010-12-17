@@ -15,5 +15,7 @@ hub:
          browser: "InternetExplorer"
        - name:    "firefox on windows"
          browser: "Firefox"
+       - name:    "firefox on any"
+         browser: "Firefox"
        - name:    "htmlunit on any"
          browser: "HtmlUnit"

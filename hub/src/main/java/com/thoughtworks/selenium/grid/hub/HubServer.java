@@ -28,7 +28,7 @@ public class HubServer {
         server.setHandler(contexts);
 
         root = new Context(contexts, "/", Context.SESSIONS);
-        root.addServlet(new ServletHolder(new WebDriverServlet()), "/wd/hub/*");
+        root.addServlet(new ServletHolder(new WebDriverServlet()), "/wd/*");
         root.addServlet(new ServletHolder(new HubServlet()), "/selenium-server/driver/*");
         root.addServlet(new ServletHolder(new ConsoleServlet()), "/console");
         root.addServlet(new ServletHolder(new RegistrationServlet()), "/registration-manager/register");

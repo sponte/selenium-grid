@@ -10,7 +10,7 @@ public abstract class GoogleImageTestBase {
 
     public static final String TIMEOUT = "120000";
 
-    
+
     protected void runFlickrScenario(String searchString) {
         session().setTimeout(TIMEOUT);
         session().open("/");
@@ -18,11 +18,8 @@ public abstract class GoogleImageTestBase {
         session().type("q", searchString);
         session().click("btnG");
         session().waitForPageToLoad(TIMEOUT);
-        session().click("rptgl");
-        session().click("imgsz_l");
-        session().click("imgtype_photo");
-        session().click("btnG");
-        session().waitForPageToLoad(TIMEOUT);
+        session().click("isz_l");
+        session().click("itp_photo");
     }
 
 }

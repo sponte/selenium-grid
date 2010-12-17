@@ -53,6 +53,7 @@
           <option name="SMART_TABS" value="false" />
           <option name="LABEL_INDENT_SIZE" value="0" />
           <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+          <option name="USE_RELATIVE_INDENTS" value="false" />
         </ADDITIONAL_INDENT_OPTIONS>
         <ADDITIONAL_INDENT_OPTIONS fileType="jsp">
           <option name="INDENT_SIZE" value="4" />
@@ -62,6 +63,7 @@
           <option name="SMART_TABS" value="false" />
           <option name="LABEL_INDENT_SIZE" value="0" />
           <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+          <option name="USE_RELATIVE_INDENTS" value="false" />
         </ADDITIONAL_INDENT_OPTIONS>
         <ADDITIONAL_INDENT_OPTIONS fileType="xml">
           <option name="INDENT_SIZE" value="4" />
@@ -71,6 +73,7 @@
           <option name="SMART_TABS" value="false" />
           <option name="LABEL_INDENT_SIZE" value="0" />
           <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+          <option name="USE_RELATIVE_INDENTS" value="false" />
         </ADDITIONAL_INDENT_OPTIONS>
       </value>
     </option>
@@ -122,7 +125,9 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
     <option name="MAXIMUM_HEAP_SIZE" value="128" />
   </component>
-  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
+  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
+    <file url="file://$PROJECT_DIR$/hub/src/main/java/com/thoughtworks/selenium/grid/hub/remotecontrol/commands/webdriver/WebDriverCommand.java" charset="UTF-8" />
+  </component>
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
   </component>
@@ -187,7 +192,7 @@
         <inspection_tool class="ClassReferencesSubclass" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="ClassUnconnectedToPackage" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="ClassWithMultipleLoggers" enabled="true" level="WARNING" enabled_by_default="true">
-          <option name="loggerClassName" value="java.util.logging.Logger" />
+          <option name="loggerNamesString" value="java.util.logging.Logger,org.slf4j.Logger,org.apache.commons.logging.Log,org.apache.log4j.Logger" />
         </inspection_tool>
         <inspection_tool class="ClassWithTooManyDependencies" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="limit" value="10" />
@@ -253,8 +258,11 @@
         </inspection_tool>
         <inspection_tool class="InstanceVariableUninitializedUse" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="m_ignorePrimitives" value="false" />
+          <option name="annotationNamesString" value="" />
         </inspection_tool>
-        <inspection_tool class="InstanceofChain" enabled="true" level="WARNING" enabled_by_default="true" />
+        <inspection_tool class="InstanceofChain" enabled="true" level="WARNING" enabled_by_default="true">
+          <option name="ignoreInstanceofOnLibraryClasses" value="false" />
+        </inspection_tool>
         <inspection_tool class="InstanceofInterfaces" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="InstanceofThis" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="JDBCExecuteWithNonConstantString" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -282,6 +290,8 @@
         </inspection_tool>
         <inspection_tool class="MethodOnlyUsedFromInnerClass" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="ignoreMethodsAccessedFromAnonymousClass" value="false" />
+          <option name="ignoreStaticMethodsFromNonStaticInnerClass" value="false" />
+          <option name="onlyReportStaticMethods" value="false" />
         </inspection_tool>
         <inspection_tool class="MethodOverloadsParentMethod" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="MethodOverridesPackageLocalMethod" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -289,7 +299,9 @@
         <inspection_tool class="MethodOverridesStaticMethod" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="MethodWithMultipleLoops" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="MissingDeprecatedAnnotation" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="MissingOverrideAnnotation" enabled="true" level="WARNING" enabled_by_default="true" />
+        <inspection_tool class="MissingOverrideAnnotation" enabled="true" level="WARNING" enabled_by_default="true">
+          <option name="ignoreObjectMethods" value="true" />
+        </inspection_tool>
         <inspection_tool class="MissortedModifiers" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="m_requireAnnotationsFirst" value="true" />
         </inspection_tool>
@@ -432,6 +444,7 @@
           <option name="useRighthandTypeAsWeakestTypeInAssignments" value="true" />
           <option name="useParameterizedTypeForCollectionMethods" value="true" />
           <option name="doNotWeakenToJavaLangObject" value="true" />
+          <option name="onlyWeakentoInterface" value="true" />
         </inspection_tool>
         <inspection_tool class="TypeParameterHidesVisibleType" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="UnnecessarilyQualifiedStaticUsage" enabled="true" level="WARNING" enabled_by_default="true">
@@ -439,7 +452,9 @@
           <option name="m_ignoreStaticMethodCalls" value="false" />
           <option name="m_ignoreStaticAccessFromStaticContext" value="false" />
         </inspection_tool>
-        <inspection_tool class="UnnecessaryBlockStatement" enabled="true" level="WARNING" enabled_by_default="true" />
+        <inspection_tool class="UnnecessaryBlockStatement" enabled="true" level="WARNING" enabled_by_default="true">
+          <option name="ignoreSwitchBranches" value="false" />
+        </inspection_tool>
         <inspection_tool class="UnnecessaryConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="UnnecessaryEnumModifier" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="UnnecessaryFinalOnParameter" enabled="true" level="WARNING" enabled_by_default="true">
@@ -639,7 +654,11 @@
       <module fileurl="file://$PROJECT_DIR$/examples/java-testng/TestNG Example.iml" filepath="$PROJECT_DIR$/examples/java-testng/TestNG Example.iml" />
       <module fileurl="file://$PROJECT_DIR$/tools/Tools.iml" filepath="$PROJECT_DIR$/tools/Tools.iml" />
       <module fileurl="file://$PROJECT_DIR$/infrastructure/webserver/WebServer.iml" filepath="$PROJECT_DIR$/infrastructure/webserver/WebServer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/integration-tests/integration-tests.iml" filepath="$PROJECT_DIR$/integration-tests/integration-tests.iml" />
     </modules>
+  </component>
+  <component name="ProjectResources">
+    <default-html-doctype>http://www.w3.org/1999/xhtml</default-html-doctype>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/target/classes" />
@@ -698,9 +717,10 @@
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
   <component name="libraryTable">
-    <library name="Selenium Java Client Driver">
+    <library name="Commons">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/vendor/selenium-java-2.0a6.jar!/" />
+        <root url="jar://$PROJECT_DIR$/vendor/junit-4.7.jar!/" />
+        <root url="jar://$PROJECT_DIR$/vendor/commons-logging-1.1.1.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
@@ -710,6 +730,62 @@
         <root url="jar://$PROJECT_DIR$/vendor/commons-codec-1.4.jar!/" />
         <root url="jar://$PROJECT_DIR$/vendor/commons-logging-1.1.1.jar!/" />
         <root url="jar://$PROJECT_DIR$/vendor/commons-httpclient-3.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="Hub Resources">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/hub/src/main/java" />
+        <root url="file://$PROJECT_DIR$/hub/src/test/unit/java" />
+        <root url="file://$PROJECT_DIR$/hub/src/main/java" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/hub/src/main/java" recursive="false" />
+    </library>
+    <library name="Jetty">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/vendor/jetty-6.1.24.jar!/" />
+        <root url="jar://$PROJECT_DIR$/vendor/servlet-api-2.5-20081211.jar!/" />
+        <root url="jar://$PROJECT_DIR$/vendor/jetty-util-6.1.24.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="JSON">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/vendor/json.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="JUnit">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/vendor/junit-4.7.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="Selenium Java Client Driver">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/vendor/selenium-java-2.0a6.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="Selenium Remote Control">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/vendor/selenium-server-standalone-2.0a7.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="file://$PROJECT_DIR$/../../selenium-read-only/remote/server/src/java" />
+      </SOURCES>
+    </library>
+    <library name="TestNG">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/vendor/testng-5.7-jdk15.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
@@ -728,24 +804,6 @@
       <JAVADOC />
       <SOURCES />
     </library>
-    <library name="Jetty">
-      <CLASSES>
-        <root url="jar://$PROJECT_DIR$/vendor/jetty-6.1.24.jar!/" />
-        <root url="jar://$PROJECT_DIR$/vendor/servlet-api-2.5-20081211.jar!/" />
-        <root url="jar://$PROJECT_DIR$/vendor/jetty-util-6.1.24.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-    </library>
-    <library name="Selenium Remote Control">
-      <CLASSES>
-        <root url="jar://$PROJECT_DIR$/vendor/selenium-server-standalone-2.0a6.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES>
-        <root url="file://$PROJECT_DIR$/../../selenium-read-only/remote/server/src/java" />
-      </SOURCES>
-    </library>
     <library name="Web">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/hub/lib/freemarker-2.3.16.jar!/" />
@@ -756,45 +814,6 @@
     <library name="Yaml">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/vendor/jyaml-1.3.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-    </library>
-    <library name="Hub Resources">
-      <CLASSES>
-        <root url="file://$PROJECT_DIR$/hub/src/main/java" />
-        <root url="file://$PROJECT_DIR$/hub/src/test/unit/java" />
-        <root url="file://$PROJECT_DIR$/hub/src/main/java" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/hub/src/main/java" recursive="false" />
-    </library>
-    <library name="Commons">
-      <CLASSES>
-        <root url="jar://$PROJECT_DIR$/vendor/junit-4.7.jar!/" />
-        <root url="jar://$PROJECT_DIR$/vendor/commons-logging-1.1.1.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-    </library>
-    <library name="TestNG">
-      <CLASSES>
-        <root url="jar://$PROJECT_DIR$/vendor/testng-5.7-jdk15.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-    </library>
-    <library name="JUnit">
-      <CLASSES>
-        <root url="jar://$PROJECT_DIR$/vendor/junit-4.7.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-    </library>
-    <library name="JSON">
-      <CLASSES>
-        <root url="jar://$PROJECT_DIR$/vendor/json.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
