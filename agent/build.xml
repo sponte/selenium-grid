@@ -1,70 +1,71 @@
 <project name="Selenium Grid Agent" default="package-standalone" basedir=".">
 
-  <description>Selenium Grid Agent</description>
+    <description>Selenium Grid Agent</description>
 
-  <property name="rootdir" value="${basedir}/.."/>
-  <property file="${rootdir}/project.properties"/>
-  <property name="name" value="Selenium Grid Agent"/>
-  <property name="artifact" value="selenium-grid-agent"/>
-  <property name="version" value="SNAPSHOT"/>
-  <property name="selenium.version" value="Set Me"/>
+    <property name="rootdir" value="${basedir}/.."/>
+    <property file="${rootdir}/project.properties"/>
+    <property name="name" value="Selenium Grid Agent"/>
+    <property name="artifact" value="selenium-grid-agent"/>
+    <property name="version" value="SNAPSHOT"/>
+    <property name="selenium.version" value="Set Me"/>
 
-  
-  <import file="${rootdir}/lib/build/common-build.xml" />
 
-  <path id="compile.classpath">
-    <fileset dir="${rootdir}/vendor">
-      <include name="servlet-api-2.5-20081211.jar"/>
-      <include name="commons-logging-1.1.1.jar"/>
+    <import file="${rootdir}/lib/build/common-build.xml"/>
 
-        <include name="cobertura-1.9.jar"/>
-        <include name="log4j-1.2.9.jar"/>
-        <include name="asm-2.2.1.jar"/>
-        <include name="asm-tree-2.2.1.jar"/>
-        <include name="jakarta-oro-2.0.8.jar"/>
-      
-    </fileset>
-    <pathelement location="${rootdir}/infrastructure/core/target/classes"/>
-    <pathelement location="${rootdir}/infrastructure/webserver/target/classes"/>    
-    <pathelement path="${java.class.path}/"/>
-  </path>
+    <path id="compile.classpath">
+        <fileset dir="${rootdir}/vendor">
+            <include name="servlet-api-2.5-20081211.jar"/>
+            <include name="commons-logging-1.1.1.jar"/>
 
-  <path id="runtime.classpath">
-      <fileset dir="${rootdir}/vendor">
-        <include name="jetty-6.1.24.jar"/>
-        <include name="jetty-util-6.1.24.jar"/>
-        <include name="servlet-api-2.5-20081211.jar"/>
-        <include name="commons-httpclient-3.1.jar"/>
-        <include name="commons-codec-1.4.jar"/>
-        <include name="commons-logging-1.1.1.jar"/>
-      </fileset>
-      <pathelement location="${rootdir}/infrastructure/core/target/classes"/>
-      <pathelement location="${rootdir}/infrastructure/webserver/target/classes"/>
-      <pathelement location="${build.output}"/>
-    <pathelement path="${java.class.path}/"/>
-  </path>
-  
-  <target name="package-standalone" depends="package" description="Package as a jar including all dependencies">
-    <package-standalone-jar main-class="com.thoughtworks.selenium.grid.agent.AgentServer">
-      <dependencies>
-        <zipfileset src="${rootdir}/infrastructure/core/target/dist/lib/selenium-grid-core-${version}.jar"/>
-        <zipfileset src="${rootdir}/infrastructure/webserver/target/dist/lib/selenium-grid-webserver-${version}.jar"/>
-        <zipfileset src="${rootdir}/vendor/jetty-6.1.24.jar"/>
-        <zipfileset src="${rootdir}/vendor/jetty-util-6.1.24.jar"/>
-        <zipfileset src="${rootdir}/vendor/servlet-api-2.5-20081211.jar"/>
-        <zipfileset src="${rootdir}/vendor/commons-httpclient-3.1.jar"/>
-        <zipfileset src="${rootdir}/vendor/commons-codec-1.4.jar"/>
-        <zipfileset src="${rootdir}/vendor/commons-logging-1.1.1.jar"/>
-      </dependencies>
-    </package-standalone-jar>
-  </target>
+            <include name="cobertura-1.9.4.1.jar"/>
+            <include name="log4j-1.2.9.jar"/>
+            <include name="asm-2.2.1.jar"/>
+            <include name="asm-tree-2.2.1.jar"/>
+            <include name="jakarta-oro-2.0.8.jar"/>
 
-  <target name="run" description="Launch a remote control">
-    <java classpathref="runtime.classpath"
-          classname="com.thoughtworks.selenium.grid.agent.AgentServer"
-          fork="true"
-          failonerror="true">
-    </java>
-  </target>
+        </fileset>
+        <pathelement location="${rootdir}/infrastructure/core/target/classes"/>
+        <pathelement location="${rootdir}/infrastructure/webserver/target/classes"/>
+        <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <path id="runtime.classpath">
+        <fileset dir="${rootdir}/vendor">
+            <include name="jetty-6.1.24.jar"/>
+            <include name="jetty-util-6.1.24.jar"/>
+            <include name="servlet-api-2.5-20081211.jar"/>
+            <include name="commons-httpclient-3.1.jar"/>
+            <include name="commons-codec-1.4.jar"/>
+            <include name="commons-logging-1.1.1.jar"/>
+        </fileset>
+        <pathelement location="${rootdir}/infrastructure/core/target/classes"/>
+        <pathelement location="${rootdir}/infrastructure/webserver/target/classes"/>
+        <pathelement location="${build.output}"/>
+        <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <target name="package-standalone" depends="package" description="Package as a jar including all dependencies">
+        <package-standalone-jar main-class="com.thoughtworks.selenium.grid.agent.AgentServer">
+            <dependencies>
+                <zipfileset src="${rootdir}/infrastructure/core/target/dist/lib/selenium-grid-core-${version}.jar"/>
+                <zipfileset
+                        src="${rootdir}/infrastructure/webserver/target/dist/lib/selenium-grid-webserver-${version}.jar"/>
+                <zipfileset src="${rootdir}/vendor/jetty-6.1.24.jar"/>
+                <zipfileset src="${rootdir}/vendor/jetty-util-6.1.24.jar"/>
+                <zipfileset src="${rootdir}/vendor/servlet-api-2.5-20081211.jar"/>
+                <zipfileset src="${rootdir}/vendor/commons-httpclient-3.1.jar"/>
+                <zipfileset src="${rootdir}/vendor/commons-codec-1.4.jar"/>
+                <zipfileset src="${rootdir}/vendor/commons-logging-1.1.1.jar"/>
+            </dependencies>
+        </package-standalone-jar>
+    </target>
+
+    <target name="run" description="Launch a remote control">
+        <java classpathref="runtime.classpath"
+              classname="com.thoughtworks.selenium.grid.agent.AgentServer"
+              fork="true"
+              failonerror="true">
+        </java>
+    </target>
 
 </project>
