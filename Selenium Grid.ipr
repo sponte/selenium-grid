@@ -769,18 +769,18 @@
     </library>
     <library name="Selenium Java Client Driver">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/vendor/selenium-java-2.0a6.jar!/" />
+        <root url="jar://$PROJECT_DIR$/vendor/selenium-java-2.0b1.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
     </library>
     <library name="Selenium Remote Control">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/vendor/selenium-server-standalone-2.0a7.jar!/" />
+        <root url="jar://$PROJECT_DIR$/vendor/selenium-server-standalone-2.0b1.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
-        <root url="file://$PROJECT_DIR$/../../selenium-read-only/remote/server/src/java" />
+        <root url="file://D:/Selenium/remote/server/src/java" />
       </SOURCES>
     </library>
     <library name="TestNG">

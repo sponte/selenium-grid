@@ -63,14 +63,15 @@
         </package-standalone-jar>
     </target>
 
-    <target name="run" description="Launch a selenium hub">
+    <target name="run" description="Launch selenium hub">
+        <echo message="Running selenium hub"/>
         <java classpathref="runtime.classpath"
               classname="com.thoughtworks.selenium.grid.hub.HubServer"
               fork="true"
               failonerror="true">
+            <arg value="-port 5555"/>
+            <arg value="5555"/>
             <jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,address=5005,suspend=n"/>
-            <arg value="-port"/>
-            <arg value="4444"/>
         </java>
     </target>
 

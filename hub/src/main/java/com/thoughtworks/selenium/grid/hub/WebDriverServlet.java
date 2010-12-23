@@ -84,10 +84,7 @@ public class WebDriverServlet extends HttpServlet {
     protected void reply(HttpServletResponse response, Response remoteControlResponse) throws IOException {
         int statusCode = remoteControlResponse.statusCode();
         String body = remoteControlResponse.body();
-
         response.setStatus(statusCode);
-
-        System.out.println(response.toString());
 
         if (statusCode != 204) {
             response.setContentType("application/json");

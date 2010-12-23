@@ -62,11 +62,6 @@
               classname="com.thoughtworks.selenium.grid.remotecontrol.SelfRegisteringRemoteControlLauncher"
               fork="true"
               failonerror="true">
-
-            <sysproperty key="http.proxyHost" value="${http.proxyHost}"/>
-            <sysproperty key="http.proxyPort" value="${http.proxyPort}"/>
-            <sysproperty key="https.proxyHost" value="${https.proxyHost}"/>
-            <sysproperty key="https.proxyPort" value="${https.proxyPort}"/>
             <jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,address=5007,suspend=n"/>
 
             <arg value="-port"/>
@@ -83,25 +78,42 @@
         </java>
     </target>
 
-    <target name="run-webdriver" description="Launch a remote control using webdriver environment">
+    <target name="run-webdriver-ie" description="Launch a remote control using webdriver environment">
         <java classpathref="runtime.classpath"
               classname="com.thoughtworks.selenium.grid.remotecontrol.SelfRegisteringRemoteControlLauncher"
               fork="true"
               failonerror="true">
 
-            <sysproperty key="http.proxyHost" value="${http.proxyHost}"/>
-            <sysproperty key="http.proxyPort" value="${http.proxyPort}"/>
-            <sysproperty key="https.proxyHost" value="${https.proxyHost}"/>
-            <sysproperty key="https.proxyPort" value="${https.proxyPort}"/>
-            <jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,address=5007,suspend=n"/>
+            <jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,address=5008,suspend=n"/>
             <arg value="-port"/>
-            <arg value="7777"/>
+            <arg value="7778"/>
             <arg value="-host"/>
             <arg value="${host}"/>
             <arg value="-hubURL"/>
             <arg value="${hubURL}"/>
             <arg value="-env"/>
             <arg value="internet explorer on windows"/>
+            <arg value="-hubPollerIntervalInSeconds"/>
+            <arg value="${hubPollerIntervalInSeconds}"/>
+            <arg line="${seleniumArgs}"/>
+        </java>
+    </target>
+
+    <target name="run-webdriver-ff-on-any" description="Launch a remote control using webdriver environment">
+        <java classpathref="runtime.classpath"
+              classname="com.thoughtworks.selenium.grid.remotecontrol.SelfRegisteringRemoteControlLauncher"
+              fork="true"
+              failonerror="true">
+
+            <jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,address=5009,suspend=n"/>
+            <arg value="-port"/>
+            <arg value="7779"/>
+            <arg value="-host"/>
+            <arg value="${host}"/>
+            <arg value="-hubURL"/>
+            <arg value="${hubURL}"/>
+            <arg value="-env"/>
+            <arg value="firefox on any"/>
             <arg value="-hubPollerIntervalInSeconds"/>
             <arg value="${hubPollerIntervalInSeconds}"/>
             <arg line="${seleniumArgs}"/>
@@ -115,10 +127,6 @@
               fork="true"
               failonerror="true">
 
-            <sysproperty key="http.proxyHost" value="${http.proxyHost}"/>
-            <sysproperty key="http.proxyPort" value="${http.proxyPort}"/>
-            <sysproperty key="https.proxyHost" value="${https.proxyHost}"/>
-            <sysproperty key="https.proxyPort" value="${https.proxyPort}"/>
             <jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,address=5007,suspend=n"/>
             <arg value="-port"/>
             <arg value="7777"/>
