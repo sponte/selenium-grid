@@ -29,17 +29,19 @@ public class JMVMLauncherTest {
 
 
     @Test
-    public void canCaptureProcessOutut() throws IOException {
+    public void canCaptureProcessOutut() throws IOException, InterruptedException {
         final Classpath classpath;
         final JVMLauncher launcher;
         final JVMHandle handle;
 
         classpath = new Classpath();
-        classpath.add("/Users/ph7/Projects/Selenium Grid/vendor/selenium-server-1.0-SNAPSHOT.jar");
-        classpath.add("/Users/ph7/Projects/Selenium Grid/remote-control/target/dist/lib/selenium-grid-remote-control-standalone-1.0.2.jar");
+        classpath.add(String.format("/Users/swozniak/Documents/git-projects/selenium-grid/vendor/selenium-server-standalone-%s.jar", "2.0b1"));
+        classpath.add(String.format("/Users/swozniak/Documents/git-projects/selenium-grid/remote-control/target/dist/lib/selenium-grid-remote-control-standalone-%s.jar", "1.1.0.2-SPONTE-SNAPSHOT"));
+
         launcher = new JVMLauncher(classpath, "com.thoughtworks.selenium.grid.remotecontrol.SelfRegisteringRemoteControlLauncher");
         handle = launcher.launchNewJVM();
         assertTrue(handle.alive());
+        Thread.sleep(1 * SECOND);
         handle.waitForProg(System.out);
     }
 
