@@ -1,7 +1,7 @@
 hub:
    port: 4444
-   remoteControlPollingIntervalInSeconds: 10
-   sessionMaxIdleTimeInSeconds: 300
+   remoteControlPollingIntervalInSeconds: 60
+   sessionMaxIdleTimeInSeconds: 150
    environments:
        - name:    "*firefox"
          browser: "*firefox"
@@ -11,6 +11,7 @@ hub:
          browser: "*iehta"
        - name:    "*safari"
          browser: "*safari"
+       # webdriver environments
        - name:    "internet explorer on windows"
          browser: "InternetExplorer"
        - name:    "firefox on windows"
@@ -19,3 +20,11 @@ hub:
          browser: "Firefox"
        - name:    "htmlunit on any"
          browser: "HtmlUnit"
+       - name:    "chrome on any"
+         browser: "Chrome"
+       - name:    "chrome on windows"
+         browser: "Chrome"
+       - name:    "safari on any"
+         browser: "Safari"
+       - name:    "safari on windows"
+         browser: "Safari"
